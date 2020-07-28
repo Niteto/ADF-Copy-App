@@ -22,8 +22,8 @@ boolean HD_allowed = true;
 boolean write_SCP = false; //at the moment there is no write function
 boolean scpMode = true;
 
-String version = "v1.104 Beta";
-Float minVer = 1.050;
+String version = "v1.110 Beta";
+Float minVer = 1.110;
 String firmware = "unknown";
 //import com.fazecast.jSerialComm.*;
 import java.io.DataOutputStream;
@@ -149,10 +149,13 @@ class Sector
 }
 Sector extTrack[] = new Sector[maxSectors];
 
-boolean loadIni(String iniFile)
+boolean loadIni(String iniName)
 {
   try {
-    Wini ini = new Wini(new File(iniFile));
+    File iniFile = new File(iniName);
+    println("iniFile: " + iniFile);
+    Wini ini = new Wini(iniFile);
+    println("ini: " + ini);
     savelog = ini.get("readdisk", "log", boolean.class);
     savejpg = ini.get("readdisk", "jpg", boolean.class);
     posx = ini.get("window", "posx", int.class);
@@ -173,7 +176,8 @@ boolean loadIni(String iniFile)
     //System.out.print("filePath: " + filePath + "\n");
   }
   catch(Exception e) {
-    System.err.println("adf-copy.ini not found, creating default ini file.");
+    println("exception: " + e);
+    System.err.println(iniFile + " not found, creating default ini file.");
     return false;
   }
   return true;
@@ -228,7 +232,9 @@ String iniPath () {
 }
 
 void setup() {
-  size(600, 580, JAVA2D);  // Stage size
+  //fullScreen();
+  //surface.setSize(600,580);
+  size(600, 560, JAVA2D);  // Stage size
   //size(1200, 720, JAVA2D);  // Stage size
   println("\n------------------------------------------------------------");
   println("ADF-Copy App - Frontend to Read and Write Amiga Floppy Disks");
@@ -236,7 +242,9 @@ void setup() {
   println("visit http://nicklabor.niteto.de for Infos and Updates");
   println("------------------------------------------------------------\n");
   java.awt.Frame f =  (java.awt.Frame) ((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame();
-  f.setSize(600, 580);
+  //println(height);
+  //println(f.size().height);
+  //f.setSize(600, 590);
   iniFile = iniPath() + "/adf-copy.ini";
   if (iniFile.contains("temp")) {
     println("running in IDE, using sketchPath as ini file location");
@@ -335,8 +343,14 @@ void setup() {
       surface.setTitle(version+": Connecting to Hardware... "+timeout);
       timeout--;
       if (timeout<=0) {
-        showMessageDialog(((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame(), "Communication timed out, please try again.", "Timeout", INFORMATION_MESSAGE);
-        System.exit(0);
+        if (showConfirmDialog(((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame(), "Communication timed out, please try again.", "Timeout", YES_NO_OPTION)==0)
+        {
+          timeout = 40;
+          myPort.clear();
+          myPort.write("ver\n");
+        } else {
+          System.exit(0);
+        }
       }
     }
     myPort.clear();
@@ -352,7 +366,6 @@ void setup() {
       scpMode = false;
     }
   }
-  surface.setTitle(version+": Creating GUI");
   setupGUI();
   if (firmwareVersion < minVer) showMessageDialog(((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame(), "This application requires firmware " + String.format("%.3f", minVer) + " or later.", "Firmware", INFORMATION_MESSAGE);
   if (myPort==null) {
@@ -408,16 +421,10 @@ void draw() {
   //logoPad.draw();
   //histPad.draw();
   //cellPad.draw();
-  //showhist = histwindow.isVisible();
-  //showflux = fluxdetail.isVisible();
-  //showdisk = diskwindow.isVisible();
-  //showhist_.setSelected(showhist);
-  //showflux_.setSelected(showflux);
-  //showdisk_.setSelected(showdisk);
   if (focused) {
     ((processing.awt.PSurfaceAWT.SmoothCanvas)histwindow.getSurface().getNative()).getFrame().toFront();
-    ((processing.awt.PSurfaceAWT.SmoothCanvas)fluxdetail.getSurface().getNative()).getFrame().toFront();
-    ((processing.awt.PSurfaceAWT.SmoothCanvas)diskwindow.getSurface().getNative()).getFrame().toFront();
+    if (showflux) ((processing.awt.PSurfaceAWT.SmoothCanvas)fluxwindow.getSurface().getNative()).getFrame().toFront();
+    if (showdisk) ((processing.awt.PSurfaceAWT.SmoothCanvas)diskwindow.getSurface().getNative()).getFrame().toFront();
   }
 }
 
@@ -429,7 +436,7 @@ int gridClick(int side, int x, int y, int button)
   if (y<1 | y>9) return -1; 
   int trackClick = ((y-1)*10 + (x-1))*2 + side;
   if (trackClick > 167) return -1;
-  println("Track: " + trackClick + " @ " + millis());
+  //println("Track: " + trackClick + " @ " + millis());
   return trackClick;
 }
 
@@ -454,8 +461,8 @@ void mouseReleased() {
   else focusTrack = tempTrack;
   if (focusTrack!=-1) {
     drawStatus(status, "Track: " + focusTrack+" Errors: "+parseError(errormap[focusTrack]));
-    drawHist(histogram, focusTrack);
-    drawCells(cellgraph, focusTrack, false);
+    drawHistwindow(histogram, focusTrack);
+    drawFluxwindow(cellgraph, focusTrack, false);
     //for (int j = 0; j <= revsInBuffer; j++)
     //  println("revPointer["+ focusTrack +"]["+j+"]: " + revpointer[focusTrack][j]);
   } else drawStatus(status, "");
