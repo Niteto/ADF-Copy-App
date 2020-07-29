@@ -15,7 +15,7 @@ PGraphics diskside1;
 
 void setupGUI()
 {
-  surface.setTitle(version+": Creating GUI");
+  surface.setTitle(versionString+": Creating GUI");
   createGUI();
   //histwindow.setVisible(showhist);
   //fluxwindow.setVisible(false);
@@ -27,36 +27,9 @@ void setupGUI()
   //  fluxwindow.setLocation(mainframe.getX()+mainframe.getWidth(), mainframe.getY());
   //if (mainframe.getHeight()+diskwindow.width < displayWidth)
   //  diskwindow.setLocation(mainframe.getX()+mainframe.getWidth(), mainframe.getY()+fluxwindow.height+30);
-  println((java.awt.Frame) ((processing.awt.PSurfaceAWT.SmoothCanvas)fluxwindow.getSurface().getNative()).getFrame());
-  println((java.awt.Frame) ((processing.awt.PSurfaceAWT.SmoothCanvas)diskwindow.getSurface().getNative()).getFrame());
+  //println((java.awt.Frame) ((processing.awt.PSurfaceAWT.SmoothCanvas)fluxwindow.getSurface().getNative()).getFrame());
+  //println((java.awt.Frame) ((processing.awt.PSurfaceAWT.SmoothCanvas)diskwindow.getSurface().getNative()).getFrame());
 
-  Frame fluxframe = ((processing.awt.PSurfaceAWT.SmoothCanvas)fluxwindow.getSurface().getNative()).getFrame();
-  Frame diskframe = ((processing.awt.PSurfaceAWT.SmoothCanvas)diskwindow.getSurface().getNative()).getFrame();
-  if (mainframe.getX()+mainframe.getWidth()+fluxframe.getWidth() < displayWidth){
-    fluxwindow.setLocation(mainframe.getX()+mainframe.getWidth(), mainframe.getY());
-    println("moved flux");
-  }
-  fluxframe.setSize(830,460);
-  if ((fluxframe.getY()+fluxframe.getHeight()+diskframe.getHeight()) < displayHeight)
-  {
-    diskwindow.setLocation(fluxframe.getX(), fluxframe.getY()+fluxframe.getHeight());
-    println("moved disk");
-  }
-  diskframe.setSize(830,437);
-  //fluxframe.revalidate();
-  //fluxframe.repaint();
-  //diskframe.revalidate();
-  //diskframe.repaint();
-  println((java.awt.Frame) ((processing.awt.PSurfaceAWT.SmoothCanvas)fluxwindow.getSurface().getNative()).getFrame());
-  println((java.awt.Frame) ((processing.awt.PSurfaceAWT.SmoothCanvas)diskwindow.getSurface().getNative()).getFrame());
-  fluxwindow.setVisible(false);
-  diskwindow.setVisible(false);
-  //diskframe.setVisible(true);
-  //fluxframe.setVisible(true);
-
-  //((processing.awt.PSurfaceAWT.SmoothCanvas)histwindow.getSurface().getNative()).getFrame().setFocusableWindowState(false);
-  //((processing.awt.PSurfaceAWT.SmoothCanvas)fluxdetail.getSurface().getNative()).getFrame().setFocusableWindowState(false);
-  //((processing.awt.PSurfaceAWT.SmoothCanvas)diskwindow.getSurface().getNative()).getFrame().setFocusableWindowState(false);
   upperGrid = createGraphics(180, 180);
   lowerGrid = createGraphics(180, 180);
   flux = createGraphics(360, 360);
@@ -64,10 +37,6 @@ void setupGUI()
   cellgraph = createGraphics((int)cellPad.getWidth(), (int)cellPad.getHeight());
   diskside0 = createGraphics(400, 400);
   diskside1 = createGraphics(400, 400);
-  //println((int)histPad.getWidth() +" " + (int)histPad.getHeight());
-  //println((int)cellPad.getWidth()+" " + (int)cellPad.getHeight());
-  //diskwindow.fill(255,0,0);
-  //diskwindow.rect(0,0,800,400);
 
   progress = createGraphics(160, 10);
   active = createGraphics((int)activePad.getWidth(),(int)activePad.getHeight());
@@ -230,6 +199,29 @@ void setupGUI()
   histwindow.getSurface().setIcon(checkmark);
   fluxwindow.getSurface().setIcon(checkmark);
   diskwindow.getSurface().setIcon(checkmark);
+  Frame fluxframe = ((processing.awt.PSurfaceAWT.SmoothCanvas)fluxwindow.getSurface().getNative()).getFrame();
+  fluxframe.setSize(830,460);
+  Frame diskframe = ((processing.awt.PSurfaceAWT.SmoothCanvas)diskwindow.getSurface().getNative()).getFrame();
+  diskframe.setSize(830,437);
+  if (mainframe.getX()+mainframe.getWidth()+fluxframe.getWidth() < displayWidth){
+    fluxwindow.setLocation(mainframe.getX()+mainframe.getWidth(), mainframe.getY());
+    //println("moved flux");
+  }
+  //fluxwindow.setLocation(695,53);
+  if ((fluxframe.getY()+fluxframe.getHeight()+diskframe.getHeight()) < displayHeight)
+  {
+    diskwindow.setLocation(fluxframe.getX(), fluxframe.getY()+fluxframe.getHeight());
+    //println("moved disk");
+  }
+  //diskwindow.setLocation(695,513);
+
+  ((processing.awt.PSurfaceAWT.SmoothCanvas)histwindow.getSurface().getNative()).getFrame().setFocusableWindowState(false);
+  ((processing.awt.PSurfaceAWT.SmoothCanvas)fluxwindow.getSurface().getNative()).getFrame().setFocusableWindowState(false);
+  ((processing.awt.PSurfaceAWT.SmoothCanvas)diskwindow.getSurface().getNative()).getFrame().setFocusableWindowState(false);
+  fluxframe.setVisible(false);
+  diskframe.setVisible(false);
+  //fluxframe.
+  //diskframe.disable();
   //println((java.awt.Frame) ((processing.awt.PSurfaceAWT.SmoothCanvas)fluxwindow.getSurface().getNative()).getFrame());
   //println((java.awt.Frame) ((processing.awt.PSurfaceAWT.SmoothCanvas)diskwindow.getSurface().getNative()).getFrame());
   //println(diskwindow.width + " " + diskwindow.height);
@@ -416,7 +408,7 @@ void drawLogo(PGraphics tL)
   PImage img;
   PImage img2;
   int waitCounter = 0;
-  surface.setTitle(version+": Loading Logo");
+  surface.setTitle(versionString+": Loading Logo");
   img = null;
   while (img == null) {
     img = loadImage("logoblau.jpg");
@@ -428,7 +420,7 @@ void drawLogo(PGraphics tL)
     }
   }
   waitCounter = 0;
-  surface.setTitle(version+": Loading GPL-Logo");
+  surface.setTitle(versionString+": Loading GPL-Logo");
   img2 = null;
   while (img2 == null) {
     img2 = loadImage("gplv3.png");

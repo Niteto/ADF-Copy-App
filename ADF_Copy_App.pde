@@ -16,13 +16,13 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* additional code for OSX Serialport by Christian Vogelgsang */
+/* additional code & help for OSX Serialport by Christian Vogelgsang */
 
 boolean HD_allowed = true;
 boolean write_SCP = false; //at the moment there is no write function
 boolean scpMode = true;
-
-String version = "v1.110 Beta";
+String version = "v1.110";
+String versionString = version + " Beta";
 Float minVer = 1.110;
 String firmware = "unknown";
 //import com.fazecast.jSerialComm.*;
@@ -155,7 +155,6 @@ boolean loadIni(String iniName)
     File iniFile = new File(iniName);
     println("iniFile: " + iniFile);
     Wini ini = new Wini(iniFile);
-    println("ini: " + ini);
     savelog = ini.get("readdisk", "log", boolean.class);
     savejpg = ini.get("readdisk", "jpg", boolean.class);
     posx = ini.get("window", "posx", int.class);
@@ -176,7 +175,7 @@ boolean loadIni(String iniName)
     //System.out.print("filePath: " + filePath + "\n");
   }
   catch(Exception e) {
-    println("exception: " + e);
+    //println("exception: " + e);
     System.err.println(iniFile + " not found, creating default ini file.");
     return false;
   }
@@ -192,7 +191,7 @@ boolean saveIni(String iniFile)
       f.createNewFile();
     }    
     Wini ini = new Wini(f);
-    ini.put("ADF-Copy", "version", version);
+    ini.put("ADF-Copy", "version", versionString);
     ini.put("readdisk", "log", savelog);
     ini.put("readdisk", "jpg", savejpg);
     java.awt.Frame myFrame =  (java.awt.Frame) ((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame();
@@ -225,15 +224,14 @@ void exit() {
 
 String iniPath () { 
   String pathName; // path to create new file
-  pathName = getClass().getProtectionDomain().getCodeSource().getLocation().getPath(); // get the path of the .jar
-  pathName = pathName.substring(1, pathName.lastIndexOf("/") ); //create a new string by removing the garbage
+  pathName = System.getProperty("user.home");
+  //pathName = getClass().getProtectionDomain().getCodeSource().getLocation().getPath(); // get the path of the .jar
+  //pathName = pathName.substring(1, pathName.lastIndexOf("/") ); //create a new string by removing the garbage
   //  System.out.println(pathName); // this is for debugging - see the results
   return pathName;
 }
 
 void setup() {
-  //fullScreen();
-  //surface.setSize(600,580);
   size(600, 560, JAVA2D);  // Stage size
   //size(1200, 720, JAVA2D);  // Stage size
   println("\n------------------------------------------------------------");
@@ -241,44 +239,36 @@ void setup() {
   println("Copyright (C) 2020 Dominik Tonn (nick@niteto.de)");
   println("visit http://nicklabor.niteto.de for Infos and Updates");
   println("------------------------------------------------------------\n");
-  java.awt.Frame f =  (java.awt.Frame) ((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame();
-  //println(height);
-  //println(f.size().height);
+  java.awt.Frame myFrame = (java.awt.Frame)((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame();
   //f.setSize(600, 590);
   iniFile = iniPath() + "/adf-copy.ini";
-  if (iniFile.contains("temp")) {
-    println("running in IDE, using sketchPath as ini file location");
-    iniFile = sketchPath("adf-copy.ini");
-  }
-  //println(iniFile);
   if (!loadIni(iniFile)) {
-    f.setLocation(posx, posy);    
+    posx= myFrame.getX();
+    posy= myFrame.getY();
     saveIni(iniFile);
   }
-  //  saveIni(iniFile);
-  f.setLocation(posx, posy);
-  int discard, major, minor, update, build;
+  myFrame.setLocation(posx, posy);
+  int major, minor, update;
 
-  println("Java: " + System.getProperty("java.runtime.version"));
-  println("Java: " + System.getProperty("java.awt.version"));
+  println("Java runtime: " + System.getProperty("java.runtime.version"));
+  if (System.getProperty("java.awt.version")!=null) println("Java awt: " + System.getProperty("java.awt.version"));
   String[] javaVersionElements = System.getProperty("java.runtime.version").split("\\.|_|\\+|-|-b");
   major   = Integer.parseInt(javaVersionElements[1]);
   minor   = Integer.parseInt(javaVersionElements[2]);
   update  = Integer.parseInt(javaVersionElements[3]);
-  println(System.getProperty("java.vendor"));
-  if (!System.getProperty("java.vendor").contains("Oracle"))
-    showMessageDialog(((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame(), "This application is tested with Oracle Java, other Vendors may cause Problems\n" +
-      "Consider using Oracle Java Version 8 if you experience problems.", 
-      "Current Java Version "+System.getProperty("java.runtime.version")+".", INFORMATION_MESSAGE);
-  else
-  {
-    boolean javaWarn = false;
-    if (major!=8) javaWarn = true;
-    if ((minor==0)&&(update<200))javaWarn = true;
-    if (javaWarn) showMessageDialog(((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame(), "This application requires Java Version 8 Update 2xx or later.\n" +
-      "Consider updating your Java to newest Version 8 if you experience problems.", 
-      "Current Java Version "+System.getProperty("java.runtime.version")+".", INFORMATION_MESSAGE);
+  println("Java Vendor: " + System.getProperty("java.vendor"));
+  if (!System.getProperty("java.vendor").contains("Oracle")) {
+    println("This application is tested with Oracle Java, other Vendors may cause Problems\n" +
+      "Consider using Oracle Java Version 8 if you experience problems."+
+      "Current Java Version "+System.getProperty("java.runtime.version")+".");
   }
+  boolean javaWarn = false;
+  if (major!=8) javaWarn = true;
+  if ((minor==0)&&(update<200))javaWarn = true;
+  if (javaWarn) showMessageDialog(((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame(), "This application requires Java Version 8 Update 2xx or later.\n" +
+    "Consider updating your Java to newest Version 8 if you experience problems.", 
+    "Current Java Version "+System.getProperty("java.runtime.version")+".", INFORMATION_MESSAGE);
+
   smooth(1);
   for (int i = 0; i<168; i++) {
     trackmap[i]=#ffffff;
@@ -291,7 +281,7 @@ void setup() {
     extTrack[i].os_recovery = new byte[16];
   }
   int waitCounter = 0;
-  surface.setTitle(version+": Loading Checkmark Image");
+  surface.setTitle(versionString+": Loading Checkmark Image");
   checkmark = null;
   while (checkmark == null) {
     checkmark = loadImage("checkmark.png");
@@ -303,7 +293,7 @@ void setup() {
     }
   }
   waitCounter = 0;
-  surface.setTitle(version+": Loading InsertDisk Image");
+  surface.setTitle(versionString+": Loading InsertDisk Image");
   disk = null;
   while (disk == null) {
     disk = loadImage("InsertDisk.png");
@@ -314,15 +304,6 @@ void setup() {
       System.exit(0);
     }
   }
-  /*
-  com.fazecast.jSerialComm.SerialPort comPort[] = com.fazecast.jSerialComm.SerialPort.getCommPorts();
-   for (int i = 0; i<comPort.length; i++) {
-   print(comPort[i].getDescriptivePortName());
-   print(" - ");
-   print(comPort[i].getSystemPortName());
-   print("\n");
-   }
-   */
   firmware = "ADF-Drive/Copy hardware not found";
   float firmwareVersion = (float)9.999;
   initSerial();
@@ -335,12 +316,12 @@ void setup() {
       print(myPort.readChar());
       delay(10);
     }
-    surface.setTitle(version+": Connecting to Hardware...");
+    surface.setTitle(versionString+": Connecting to Hardware...");
     myPort.write("ver\n");
     int timeout = 40;
     while (myPort.available()==0) {
       delay(100);
-      surface.setTitle(version+": Connecting to Hardware... "+timeout);
+      surface.setTitle(versionString+": Connecting to Hardware... "+timeout);
       timeout--;
       if (timeout<=0) {
         if (showConfirmDialog(((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame(), "Communication timed out, please try again.", "Timeout", YES_NO_OPTION)==0)
@@ -392,7 +373,7 @@ void setup() {
   diskPad.setGraphic(diskImage);
   side0.setGraphic(diskside0);
   side1.setGraphic(diskside1);
-  surface.setTitle("ADF-Copy "+version);
+  surface.setTitle("ADF-Copy "+versionString);
   background(230);
 }
 
