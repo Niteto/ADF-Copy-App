@@ -1,7 +1,9 @@
 # ADF-Copy-App
  
 This is the Frontend for the ADF-Copy Hardware, it can read, write, auto-rip, format, auto-format and erase Amiga DD and HD disks.
-Copyright (C) 2016-2019 Dominik Tonn (nick@niteto.de)
+
+Copyright (C) 2016-2020 Dominik Tonn (nick@niteto.de)
+
 Contact me if you need a PCB.
 
 ## Download
