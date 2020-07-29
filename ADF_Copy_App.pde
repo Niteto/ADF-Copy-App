@@ -16,13 +16,13 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* additional code for OSX Serialport by Christian Vogelgsang */
+/* additional code & help for OSX Serialport by Christian Vogelgsang */
 
 boolean HD_allowed = true;
 boolean write_SCP = false; //at the moment there is no write function
 boolean scpMode = true;
-
-String version = "v1.110 Beta";
+String version = "v1.110";
+String versionString = version + " Beta";
 Float minVer = 1.110;
 String firmware = "unknown";
 //import com.fazecast.jSerialComm.*;
@@ -155,7 +155,6 @@ boolean loadIni(String iniName)
     File iniFile = new File(iniName);
     println("iniFile: " + iniFile);
     Wini ini = new Wini(iniFile);
-    println("ini: " + ini);
     savelog = ini.get("readdisk", "log", boolean.class);
     savejpg = ini.get("readdisk", "jpg", boolean.class);
     posx = ini.get("window", "posx", int.class);
@@ -192,7 +191,7 @@ boolean saveIni(String iniFile)
       f.createNewFile();
     }    
     Wini ini = new Wini(f);
-    ini.put("ADF-Copy", "version", version);
+    ini.put("ADF-Copy", "version", versionString);
     ini.put("readdisk", "log", savelog);
     ini.put("readdisk", "jpg", savejpg);
     java.awt.Frame myFrame =  (java.awt.Frame) ((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame();
@@ -258,14 +257,17 @@ void setup() {
   //  saveIni(iniFile);
   f.setLocation(posx, posy);
   int discard, major, minor, update, build;
+  println("user.name: " + System.getProperty("user.name"));
+  println("user.home: " + System.getProperty("user.home"));
+  println("user.dir: " + System.getProperty("user.dir"));
 
-  println("Java: " + System.getProperty("java.runtime.version"));
-  println("Java: " + System.getProperty("java.awt.version"));
+  println("Java runtime: " + System.getProperty("java.runtime.version"));
+  if (System.getProperty("java.awt.version")!=null) println("Java awt: " + System.getProperty("java.awt.version"));
   String[] javaVersionElements = System.getProperty("java.runtime.version").split("\\.|_|\\+|-|-b");
   major   = Integer.parseInt(javaVersionElements[1]);
   minor   = Integer.parseInt(javaVersionElements[2]);
   update  = Integer.parseInt(javaVersionElements[3]);
-  println(System.getProperty("java.vendor"));
+  println("Java Vendor: " + System.getProperty("java.vendor"));
   if (!System.getProperty("java.vendor").contains("Oracle"))
     showMessageDialog(((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame(), "This application is tested with Oracle Java, other Vendors may cause Problems\n" +
       "Consider using Oracle Java Version 8 if you experience problems.", 
@@ -291,7 +293,7 @@ void setup() {
     extTrack[i].os_recovery = new byte[16];
   }
   int waitCounter = 0;
-  surface.setTitle(version+": Loading Checkmark Image");
+  surface.setTitle(versionString+": Loading Checkmark Image");
   checkmark = null;
   while (checkmark == null) {
     checkmark = loadImage("checkmark.png");
@@ -303,7 +305,7 @@ void setup() {
     }
   }
   waitCounter = 0;
-  surface.setTitle(version+": Loading InsertDisk Image");
+  surface.setTitle(versionString+": Loading InsertDisk Image");
   disk = null;
   while (disk == null) {
     disk = loadImage("InsertDisk.png");
@@ -335,12 +337,12 @@ void setup() {
       print(myPort.readChar());
       delay(10);
     }
-    surface.setTitle(version+": Connecting to Hardware...");
+    surface.setTitle(versionString+": Connecting to Hardware...");
     myPort.write("ver\n");
     int timeout = 40;
     while (myPort.available()==0) {
       delay(100);
-      surface.setTitle(version+": Connecting to Hardware... "+timeout);
+      surface.setTitle(versionString+": Connecting to Hardware... "+timeout);
       timeout--;
       if (timeout<=0) {
         if (showConfirmDialog(((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame(), "Communication timed out, please try again.", "Timeout", YES_NO_OPTION)==0)
@@ -392,7 +394,7 @@ void setup() {
   diskPad.setGraphic(diskImage);
   side0.setGraphic(diskside0);
   side1.setGraphic(diskside1);
-  surface.setTitle("ADF-Copy "+version);
+  surface.setTitle("ADF-Copy "+versionString);
   background(230);
 }
 

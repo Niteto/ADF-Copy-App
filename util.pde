@@ -99,41 +99,40 @@ String parseError(long error)
 
 void initSerial()
 {
-  surface.setTitle(version+": Loading Native Serial Library");
+  surface.setTitle(versionString+": Loading Native Serial Library");
   String osName = System.getProperty("os.name");
   String osArch = System.getProperty("os.arch");
   String libName = "";
   String osVersion = System.getProperty("os.version");
   fileSep = System.getProperty("file.separator");
-  println(osName + " " + osArch + " " + osVersion);
   if (osName.startsWith("Win")) {
     if (osArch.equals("i386") || osArch.equals("i686") || osArch.equals("x86")) {
       libName=fileSep+"jSSC-2.8_x86.dll";
-      version = version +" - "+osName+" 32 bit";
+      versionString = versionString +" - "+osName+" 32 bit";
     } else if (osArch.equals("amd64") || osArch.equals("universal")) {
       libName=fileSep+"jSSC-2.8_x86_64.dll";
-      version = version +" - "+osName+" 64 bit";
+      versionString = versionString +" - "+osName+" 64 bit";
     }
   } else {
     if (osArch.equals("arm")) {
       libName=fileSep+"libjSSC-2.8_arm.so";
-      version = version +" - "+ osName + " ARM "+osVersion;
+      versionString = versionString +" - "+ osName + " ARM "+osVersion;
     }
   }
   if (osName.startsWith("Linux")) {
     if (osArch.equals("i386") || osArch.equals("i686") || osArch.equals("x86")) {
       libName=fileSep+"libjSSC-2.8_linux32.so";
-      version = version +" - "+osName+" 32 bit";
+      versionString = versionString +" - "+osName+" 32 bit";
     } else if (osArch.equals("amd64") || osArch.equals("universal")) {
       libName=fileSep+"libjSSC-2.8_linux64.so";
-      version = version +" - "+osName+" 64 bit";
+      versionString = versionString +" - "+osName+" 64 bit";
     }
   }
-  System.out.println("osName: "+osName + " osArch:" + osArch);
+  System.out.println("OS: "+osName + " Arch: " + osArch + " Version: " + osVersion);
   if (osName.equals("Mac OS X")) {
     if (osArch.equals("x86_64")) {
       libName=fileSep+"libjSSC-2.8_macos64.jnilib";
-      version = version + " - "+osName+" 64 bit";
+      versionString = versionString + " - "+osName+" 64 bit";
     }
   }
 
@@ -142,12 +141,12 @@ void initSerial()
   } 
   catch (UnsatisfiedLinkError e) {
     System.err.println("Native code library failed to load.\n" + e);
-    version = version +".";
+    versionString = versionString +".";
     showMessageDialog(((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame(), "Unsupported System: "+osName+" "+osArch+" "+osVersion);
     System.exit(0);
   }
   println("Loaded "+dataPath("")+libName);
-  surface.setTitle(version+": Searching COM-Port");
+  surface.setTitle(versionString+": Searching COM-Port");
   String COMx, COMlist = "";
   try {
     int i = Serial.list().length;
