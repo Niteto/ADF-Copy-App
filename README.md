@@ -8,7 +8,7 @@ Contact me if you need a PCB.
 - [**Download ADF-Copy App**](https://nickslabor.niteto.de/download/)
 
 ## Project Blog:
-- https://nickslabor.niteto.de
+- [**Nicks Labor**](https://nickslabor.niteto.de)
 
 ## Redistribution
 This program is free software: you can redistribute it and/or modify
@@ -20,3 +20,4 @@ This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
+[license](COPYING)
