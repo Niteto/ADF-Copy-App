@@ -63,7 +63,6 @@ public void Init_(GImageButton source, GEvent event) { //_CODE_:Init:570321:
 } //_CODE_:Init:570321:
 
 public void Abort_(GImageButton source, GEvent event) { //_CODE_:Abort:921426:
-  // println("Abort >> GEvent." + event + " @ " + millis());
   abort= true;
 } //_CODE_:Abort:921426:
 
@@ -80,14 +79,10 @@ public void About_(GImageButton source, GEvent event) { //_CODE_:About:428967:
     disableButtons();
     enableButton(About);
     disableButton(Abort);
-    println("visible:" + diskwindow.isVisible());
-    println((java.awt.Frame) ((processing.awt.PSurfaceAWT.SmoothCanvas)fluxwindow.getSurface().getNative()).getFrame());
-    println((java.awt.Frame) ((processing.awt.PSurfaceAWT.SmoothCanvas)diskwindow.getSurface().getNative()).getFrame());
   }
 } //_CODE_:About:428967:
 
 public void ReadPanel_Click1(GPanel source, GEvent event) { //_CODE_:ReadPanel:579166:
-  //println("panel1 - GPanel >> GEvent." + event + " @ " + millis());
 } //_CODE_:ReadPanel:579166:
 
 public void Start_Read(GImageButton source, GEvent event) { //_CODE_:StartRead:531633:
@@ -100,7 +95,6 @@ public void ReadDisk_(GImageButton source, GEvent event) { //_CODE_:ReadDisk:418
 } //_CODE_:ReadDisk:418930:
 
 public void chkSumChk_(GCheckbox source, GEvent event) { //_CODE_:chkSumChk:994191:
-  //println("chkSumChk - GCheckbox >> GEvent." + event + " @ " + millis());
 } //_CODE_:chkSumChk:994191:
 
 public void AutoRip_(GImageButton source, GEvent event) { //_CODE_:AutoRip:544679:
@@ -111,15 +105,25 @@ public void AutoRip_(GImageButton source, GEvent event) { //_CODE_:AutoRip:54467
 public void compareDisk_(GImageButton source, GEvent event) { //_CODE_:compareDisk:389306:
   final File file = new File("*.adf");
   selectInput("Select an image to compare with disk:", "compareSelected", file);
-  //thread("compareDisk");
 } //_CODE_:compareDisk:389306:
 
 public void fnprompt_(GCheckbox source, GEvent event) { //_CODE_:fnprompt:907153:
-  //println("fnprompt - GCheckbox >> GEvent." + event + " @ " + millis());
 } //_CODE_:fnprompt:907153:
 
+public void showhist2_clicked(GCheckbox source, GEvent event) { //_CODE_:showhist2_:366468:
+  showhist = showhist2_.isSelected();
+  showhist2_.setSelected(showhist);
+  showhist3_.setSelected(showhist);
+
+  if (showhist) {
+    drawHistwindow(histogram, 0);
+    setWindowMode(1);
+  } else {
+    setWindowMode(0);
+  }
+} //_CODE_:showhist2_:366468:
+
 public void WritePanel_Click1(GPanel source, GEvent event) { //_CODE_:WritePanel:293428:
-  //println("panel2 - GPanel >> GEvent." + event + " @ " + millis());
 } //_CODE_:WritePanel:293428:
 
 public void WriteDisk_(GImageButton source, GEvent event) { //_CODE_:WriteDisk:856031:
@@ -142,17 +146,25 @@ public void AutoWrite_(GImageButton source, GEvent event) { //_CODE_:AutoWrite:9
 public void preerase2_clicked1(GCheckbox source, GEvent event) { //_CODE_:pre_erase2:913906:
   pre_erase.setSelected(pre_erase2.isSelected());
   preErase = pre_erase2.isSelected();
-  //println("pre_erase2 - GCheckbox >> GEvent." + event + " @ " + millis());
 } //_CODE_:pre_erase2:913906:
 
 public void indexAlignClick(GCheckbox source, GEvent event) { //_CODE_:indexAlign:284801:
   indexAlign2.setSelected(indexAlign.isSelected());
   indexAligned = indexAlign.isSelected();
-  //println("indexAlign - GCheckbox >> GEvent." + event + " @ " + millis());
 } //_CODE_:indexAlign:284801:
 
+public void showhist3_clicked(GCheckbox source, GEvent event) { //_CODE_:showhist3_:557481:
+  showhist = showhist3_.isSelected();
+  showhist2_.setSelected(showhist);
+  if (showhist) {
+    drawHistwindow(histogram, 0);
+    setWindowMode(1);
+  } else {
+    setWindowMode(0);
+  }
+} //_CODE_:showhist3_:557481:
+
 public void UtilityPanel_Click1(GPanel source, GEvent event) { //_CODE_:UtilityPanel:415550:
-  //println("panel3 - GPanel >> GEvent." + event + " @ " + millis());
 } //_CODE_:UtilityPanel:415550:
 
 public void Format_(GImageButton source, GEvent event) { //_CODE_:Format:400387:
@@ -170,7 +182,6 @@ public void AutoFormat_(GImageButton source, GEvent event) { //_CODE_:AutoFormat
 } //_CODE_:AutoFormat:663688:
 
 public void dropList2_click1(GDropList source, GEvent event) { //_CODE_:dropList2:948465:
-  //println("dropList2 - GDropList >> GEvent." + event + " @ " + millis());
 } //_CODE_:dropList2:948465:
 
 public void verifyFormat_(GCheckbox source, GEvent event) { //_CODE_:verifyFormat:387892:
@@ -178,28 +189,23 @@ public void verifyFormat_(GCheckbox source, GEvent event) { //_CODE_:verifyForma
 } //_CODE_:verifyFormat:387892:
 
 public void quickFormat_(GCheckbox source, GEvent event) { //_CODE_:quickFormat:377135:
-  //println("quickformat - GCheckbox >> GEvent." + event + " @ " + millis());
 } //_CODE_:quickFormat:377135:
 
 public void preerase_clicked1(GCheckbox source, GEvent event) { //_CODE_:pre_erase:542849:
   pre_erase2.setSelected(pre_erase.isSelected());
   preErase = pre_erase.isSelected();
-  //println("pre_erase - GCheckbox >> GEvent." + event + " @ " + millis());
 } //_CODE_:pre_erase:542849:
 
 public void Erase_(GImageButton source, GEvent event) { //_CODE_:Erase:748841:
   thread("eraseTracks");
-  //println("erase - GImageButton >> GEvent." + event + " @ " + millis());
 } //_CODE_:Erase:748841:
 
 public void indexAlignClick2(GCheckbox source, GEvent event) { //_CODE_:indexAlign2:501911:
   indexAlign.setSelected(indexAlign2.isSelected());
   indexAligned = indexAlign2.isSelected();
-  //println("indexAlign2 - GCheckbox >> GEvent." + event + " @ " + millis());
 } //_CODE_:indexAlign2:501911:
 
 public void SettingsPanel_(GPanel source, GEvent event) { //_CODE_:SettingsPanel:218569:
-  //println("panel1 - GPanel >> GEvent." + event + " @ " + millis());
 } //_CODE_:SettingsPanel:218569:
 
 public void LoadSettings_(GButton source, GEvent event) { //_CODE_:LoadSettings:537279:
@@ -216,52 +222,42 @@ public void SaveSettings_(GButton source, GEvent event) { //_CODE_:SaveSettings:
 } //_CODE_:SaveSettings:380775:
 
 public void textfield1_change2(GTextField source, GEvent event) { //_CODE_:MotorSpinup_:649666:
-  //println("textfield1 - GTextField >> GEvent." + event + " @ " + millis());
   if (event==GEvent.LOST_FOCUS) source.setText(source.getText().replaceAll("[^\\d.]", ""));
 } //_CODE_:MotorSpinup_:649666:
 
 public void textfield2_change1(GTextField source, GEvent event) { //_CODE_:MotorSpindown_:904960:
-  //println("textfield2 - GTextField >> GEvent." + event + " @ " + millis());
   if (event==GEvent.LOST_FOCUS) source.setText(source.getText().replaceAll("[^\\d.]", ""));
 } //_CODE_:MotorSpindown_:904960:
 
 public void textfield3_change1(GTextField source, GEvent event) { //_CODE_:DriveSelect_:829799:
-  //println("textfield3 - GTextField >> GEvent." + event + " @ " + millis());
   if (event==GEvent.LOST_FOCUS) source.setText(source.getText().replaceAll("[^\\d.]", ""));
 } //_CODE_:DriveSelect_:829799:
 
 public void textfield4_change1(GTextField source, GEvent event) { //_CODE_:DriveDeselect_:903112:
-  //println("textfield4 - GTextField >> GEvent." + event + " @ " + millis());
   if (event==GEvent.LOST_FOCUS) source.setText(source.getText().replaceAll("[^\\d.]", ""));
 } //_CODE_:DriveDeselect_:903112:
 
 public void textfield5_change1(GTextField source, GEvent event) { //_CODE_:DirChange_:615504:
-  //println("textfield5 - GTextField >> GEvent." + event + " @ " + millis());
   if (event==GEvent.LOST_FOCUS) source.setText(source.getText().replaceAll("[^\\d.]", ""));
 } //_CODE_:DirChange_:615504:
 
 public void textfield6_change1(GTextField source, GEvent event) { //_CODE_:SideChange_:487616:
-  //println("textfield6 - GTextField >> GEvent." + event + " @ " + millis());
   if (event==GEvent.LOST_FOCUS) source.setText(source.getText().replaceAll("[^\\d.]", ""));
 } //_CODE_:SideChange_:487616:
 
 public void textfield7_change1(GTextField source, GEvent event) { //_CODE_:StepPulse_:895739:
-  //println("textfield7 - GTextField >> GEvent." + event + " @ " + millis());
   if (event==GEvent.LOST_FOCUS) source.setText(source.getText().replaceAll("[^\\d.]", ""));
 } //_CODE_:StepPulse_:895739:
 
 public void textfield8_change1(GTextField source, GEvent event) { //_CODE_:StepSettle_:986980:
-  //println("textfield8 - GTextField >> GEvent." + event + " @ " + millis());
   if (event==GEvent.LOST_FOCUS) source.setText(source.getText().replaceAll("[^\\d.]", ""));
 } //_CODE_:StepSettle_:986980:
 
 public void textfield9_change1(GTextField source, GEvent event) { //_CODE_:GotoTrack_:364585:
-  //println("textfield9 - GTextField >> GEvent." + event + " @ " + millis());
   if (event==GEvent.LOST_FOCUS) source.setText(source.getText().replaceAll("[^\\d.]", ""));
 } //_CODE_:GotoTrack_:364585:
 
 public void checkbox1_clicked2(GCheckbox source, GEvent event) { //_CODE_:mtpMode_:230627:
-  //println("checkbox1 - GCheckbox >> GEvent." + event + " @ " + millis());
 } //_CODE_:mtpMode_:230627:
 
 public void reset2DefaultSettings_(GButton source, GEvent event) { //_CODE_:reset2DefaultSettings:700755:
@@ -270,54 +266,34 @@ public void reset2DefaultSettings_(GButton source, GEvent event) { //_CODE_:rese
 } //_CODE_:reset2DefaultSettings:700755:
 
 public void textfield1_change3(GTextField source, GEvent event) { //_CODE_:sdRetries_:566651:
-  //println("sdRetries_ - GTextField >> GEvent." + event + " @ " + millis());
   if (event==GEvent.LOST_FOCUS) source.setText(source.getText().replaceAll("[^\\d.]", ""));
 } //_CODE_:sdRetries_:566651:
 
 public void textfield1_change4(GTextField source, GEvent event) { //_CODE_:hdRetries_:588146:
-  //println("hdRetries - GTextField >> GEvent." + event + " @ " + millis());
   if (event==GEvent.LOST_FOCUS) source.setText(source.getText().replaceAll("[^\\d.]", ""));
 } //_CODE_:hdRetries_:588146:
 
 public void ReadButton_(GImageButton source, GEvent event) { //_CODE_:ReadButton:398266:
   drawActive(active, 0);
-  fluxwindow.setVisible(false);
-  diskwindow.setVisible(false);
-  fluxwindow.draw();
-  diskwindow.draw();
 } //_CODE_:ReadButton:398266:
 
 public void WriteButton_(GImageButton source, GEvent event) { //_CODE_:WriteButton:795774:
   drawActive(active, 1);
-  fluxwindow.setVisible(false);
-  diskwindow.setVisible(false);
-  fluxwindow.draw();
-  diskwindow.draw();
 } //_CODE_:WriteButton:795774:
 
 public void UtilityButton_(GImageButton source, GEvent event) { //_CODE_:UtilityButton:869569:
   drawActive(active, 3);
-  fluxwindow.setVisible(false);
-  diskwindow.setVisible(false);
-  fluxwindow.draw();
-  diskwindow.draw();
 } //_CODE_:UtilityButton:869569:
 
 public void SettingsButton_(GImageButton source, GEvent event) { //_CODE_:SettingsButton:641704:
   if (myPort!=null) getSettings();
   drawActive(active, 4);
-  fluxwindow.setVisible(false);
-  diskwindow.setVisible(false);
-  fluxwindow.draw();
-  diskwindow.draw();
 } //_CODE_:SettingsButton:641704:
 
 public void panel1_Click2(GPanel source, GEvent event) { //_CODE_:panel1:487390:
-  //println("panel1 - GPanel >> GEvent." + event + " @ " + millis());
 } //_CODE_:panel1:487390:
 
 public void testbutton_(GImageButton source, GEvent event) { //_CODE_:testbutton:828692:
-  //println("fenster2 - GImageButton >> GEvent." + event + " @ " + millis());
   if (revsInBuffer==0) return;
   if (focusTrack!=-1) { 
     decode2mfm(focusTrack, revcurrent, false);
@@ -335,50 +311,37 @@ public void testbutton_(GImageButton source, GEvent event) { //_CODE_:testbutton
 } //_CODE_:testbutton:828692:
 
 public void SCPPanel_(GPanel source, GEvent event) { //_CODE_:SCPPanel:571838:
-  //println("SCPPanel - GPanel >> GEvent." + event + " @ " + millis());
 } //_CODE_:SCPPanel:571838:
 
 public void ReadSCP_(GImageButton source, GEvent event) { //_CODE_:ReadSCP:445295:
   final File foo = new File(removeSuffix(fileName, 3)+".scp");
   selectOutput("Select a file to write to:", "readscp", foo);
-  //thread("readscp");
 } //_CODE_:ReadSCP:445295:
 
 public void WriteSCP_(GImageButton source, GEvent event) { //_CODE_:WriteSCP:297549:
   final File foo = new File("*.scp");
   selectInput("Select an image to load into memory:", "loadSCP", foo);
-  //println("WriteSCP - GImageButton >> GEvent." + event + " @ " + millis());
 } //_CODE_:WriteSCP:297549:
 
 public void revsSlider_(GCustomSlider source, GEvent event) { //_CODE_:revsSlider:473321:
-  //println("custom_slider2 - GCustomSlider >> GEvent." + event + " @ " + millis());
 } //_CODE_:revsSlider:473321:
 
 public void scanDisk_(GImageButton source, GEvent event) { //_CODE_:scanDisk:580493:
   thread("scandisk");
 } //_CODE_:scanDisk:580493:
 
-public void showhist_clicked(GCheckbox source, GEvent event) { //_CODE_:showhist_:894426:
-  showhist = showhist_.isSelected();
-  histwindow.setVisible(showhist);
-  if (showhist) drawHistwindow(histogram, 0);
-} //_CODE_:showhist_:894426:
-
 public void showflux_clicked(GCheckbox source, GEvent event) { //_CODE_:showflux_:464322:
   showflux = showflux_.isSelected();
-  fluxwindow.setVisible(showflux);
-  fluxwindow.draw();
-  if (showflux) drawFluxwindow(cellgraph, 0, false);
+  if (showflux){
+    drawFluxwindow(cellgraph, 0, false);
+    setWindowMode(2);
+  } else {
+    if (showhist) setWindowMode(1);
+    else setWindowMode(0);
+  }
 } //_CODE_:showflux_:464322:
 
-public void showdisk_clicked(GCheckbox source, GEvent event) { //_CODE_:showdisk_:455523:
-  showdisk = showdisk_.isSelected();
-  diskwindow.setVisible(showdisk);
-  if (showdisk) drawDiskwindow();
-} //_CODE_:showdisk_:455523:
-
 public void startEndPanel_(GPanel source, GEvent event) { //_CODE_:startEndPanel:577236:
-  //println("startEndPanel - GPanel >> GEvent." + event + " @ " + millis());
 } //_CODE_:startEndPanel:577236:
 
 public void start_up_event(GImageButton source, GEvent event) { //_CODE_:start_up:647938:
@@ -433,13 +396,8 @@ public void end_down_event(GImageButton source, GEvent event) { //_CODE_:end_dow
 
 public void SCPButton_(GImageButton source, GEvent event) { //_CODE_:SCPButton:608300:
   drawActive(active, 2);
-  fluxwindow.setVisible(showflux);
-  diskwindow.setVisible(showdisk);
-  histwindow.setVisible(showhist);
   drawFluxwindow(cellgraph, focusTrack, false);
   drawDiskwindow();
-  fluxwindow.draw();
-  diskwindow.draw();
   if (myPort!=null) {
     myPort.write("getstream\n");
     int zeit = millis();
@@ -449,7 +407,8 @@ public void SCPButton_(GImageButton source, GEvent event) { //_CODE_:SCPButton:6
     }
     zeit = millis()-zeit;
     int transferrate = round((204800.f/((float)zeit/1000))/1024);
-    println("Transfertest took: " + zeit + "ms Transferrate = " + transferrate + " kbyte/s");
+    drawStatus(status, "Transferrate = " + transferrate + " kbyte/s");
+    if (debug) println("Transfertest took: " + zeit + "ms Transferrate = " + transferrate + " kbyte/s");
     myPort.clear();
     if (transferrate < 800) {
       showMessageDialog(((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame(), 
@@ -462,23 +421,14 @@ public void SCPButton_(GImageButton source, GEvent event) { //_CODE_:SCPButton:6
   }
 } //_CODE_:SCPButton:608300:
 
-synchronized public void histwin_draw1(PApplet appc, GWinData data) { //_CODE_:histwindow:588696:
-  appc.background(230);
-} //_CODE_:histwindow:588696:
-
-public void logcb_(GCheckbox source, GEvent event) { //_CODE_:logcb:766328:
-  //println("logcb - GCheckbox >> GEvent." + event + " @ " + millis());
+public void logcb_(GCheckbox source, GEvent event) { //_CODE_:logcb:935972:
   if (focusTrack!=-1) 
     drawHistwindow(histogram, focusTrack);
   else
     drawHistwindow(histogram, lastTrack);
-} //_CODE_:logcb:766328:
+} //_CODE_:logcb:935972:
 
-synchronized public void fluxwin_draw1(PApplet appc, GWinData data) { //_CODE_:fluxwindow:466459:
-  appc.background(230);
-} //_CODE_:fluxwindow:466459:
-
-public void revminus_click(GImageButton source, GEvent event) { //_CODE_:revminus:354151:
+public void revminus_click(GImageButton source, GEvent event) { //_CODE_:revminus:574025:
   if (revsInBuffer == 0) return;
   revcurrent--;
   if (revcurrent<0) revcurrent = 0;
@@ -487,9 +437,9 @@ public void revminus_click(GImageButton source, GEvent event) { //_CODE_:revminu
   else
     drawFluxwindow(cellgraph, lastTrack, false);
   drawDiskwindow();
-} //_CODE_:revminus:354151:
+} //_CODE_:revminus:574025:
 
-public void revplus_click(GImageButton source, GEvent event) { //_CODE_:revplus:301771:
+public void revplus_click(GImageButton source, GEvent event) { //_CODE_:revplus:428978:
   if (revsInBuffer == 0) return;
   revcurrent++;
   if (revcurrent>=revsInBuffer) revcurrent = revsInBuffer-1;
@@ -498,11 +448,7 @@ public void revplus_click(GImageButton source, GEvent event) { //_CODE_:revplus:
   else
     drawFluxwindow(cellgraph, lastTrack, false);
   drawDiskwindow();
-} //_CODE_:revplus:301771:
-
-synchronized public void disk_draw1(PApplet appc, GWinData data) { //_CODE_:diskwindow:815811:
-  appc.background(230);
-} //_CODE_:diskwindow:815811:
+} //_CODE_:revplus:428978:
 
 
 
@@ -537,7 +483,7 @@ public void createGUI(){
   timeLabel = new GLabel(this, 400, 300, 180, 20);
   timeLabel.setText("Progress");
   timeLabel.setOpaque(false);
-  aboutP = new GPanel(this, 379, 655, 390, 400, "About");
+  aboutP = new GPanel(this, 1200, 650, 390, 400, "About");
   aboutP.setCollapsible(false);
   aboutP.setDraggable(false);
   aboutP.setText("About");
@@ -577,7 +523,7 @@ public void createGUI(){
   Abort.addEventHandler(this, "Abort_");
   About = new GImageButton(this, 445, 150, new String[] { "button_about.png", "button_about_o.png", "button_about_p.png" } );
   About.addEventHandler(this, "About_");
-  ReadPanel = new GPanel(this, 610, 0, 260, 180, "Read");
+  ReadPanel = new GPanel(this, 1210, 0, 260, 180, "Read");
   ReadPanel.setCollapsible(false);
   ReadPanel.setDraggable(false);
   ReadPanel.setText("Read");
@@ -588,7 +534,7 @@ public void createGUI(){
   StartRead.addEventHandler(this, "Start_Read");
   ReadDisk = new GImageButton(this, 0, 30, new String[] { "button_read-disk.png", "button_read-disk_o.png", "button_read-disk_p.png" } );
   ReadDisk.addEventHandler(this, "ReadDisk_");
-  chkSumChk = new GCheckbox(this, 0, 110, 200, 20);
+  chkSumChk = new GCheckbox(this, 0, 105, 200, 20);
   chkSumChk.setText("Ignore Checksum Errors");
   chkSumChk.setOpaque(false);
   chkSumChk.addEventHandler(this, "chkSumChk_");
@@ -596,17 +542,23 @@ public void createGUI(){
   AutoRip.addEventHandler(this, "AutoRip_");
   compareDisk = new GImageButton(this, 0, 70, new String[] { "button_compare.png", "button_compare_o.png", "button_compare_p.png" } );
   compareDisk.addEventHandler(this, "compareDisk_");
-  fnprompt = new GCheckbox(this, 0, 130, 200, 20);
+  fnprompt = new GCheckbox(this, 0, 125, 200, 20);
   fnprompt.setText("Autorip Name Prompt");
   fnprompt.setOpaque(false);
   fnprompt.addEventHandler(this, "fnprompt_");
+  showhist2_ = new GCheckbox(this, 0, 145, 100, 20);
+  showhist2_.setText("Histogram");
+  showhist2_.setOpaque(false);
+  showhist2_.addEventHandler(this, "showhist2_clicked");
+  showhist2_.setSelected(true);
   ReadPanel.addControl(StartRead);
   ReadPanel.addControl(ReadDisk);
   ReadPanel.addControl(chkSumChk);
   ReadPanel.addControl(AutoRip);
   ReadPanel.addControl(compareDisk);
   ReadPanel.addControl(fnprompt);
-  WritePanel = new GPanel(this, 610, 180, 260, 180, "Write");
+  ReadPanel.addControl(showhist2_);
+  WritePanel = new GPanel(this, 1210, 180, 260, 180, "Write");
   WritePanel.setCollapsible(false);
   WritePanel.setDraggable(false);
   WritePanel.setText("Write");
@@ -629,17 +581,23 @@ public void createGUI(){
   pre_erase2.setOpaque(false);
   pre_erase2.addEventHandler(this, "preerase2_clicked1");
   pre_erase2.setSelected(true);
-  indexAlign = new GCheckbox(this, 0, 144, 93, 20);
+  indexAlign = new GCheckbox(this, 103, 105, 93, 20);
   indexAlign.setText("Index aligned");
   indexAlign.setOpaque(false);
   indexAlign.addEventHandler(this, "indexAlignClick");
+  showhist3_ = new GCheckbox(this, 0, 145, 100, 20);
+  showhist3_.setText("Histogram");
+  showhist3_.setOpaque(false);
+  showhist3_.addEventHandler(this, "showhist3_clicked");
+  showhist3_.setSelected(true);
   WritePanel.addControl(WriteDisk);
   WritePanel.addControl(StartWrite);
   WritePanel.addControl(verifyCheck);
   WritePanel.addControl(AutoWrite);
   WritePanel.addControl(pre_erase2);
   WritePanel.addControl(indexAlign);
-  UtilityPanel = new GPanel(this, 610, 361, 260, 180, "Utility");
+  WritePanel.addControl(showhist3_);
+  UtilityPanel = new GPanel(this, 1210, 361, 260, 180, "Utility");
   UtilityPanel.setCollapsible(false);
   UtilityPanel.setDraggable(false);
   UtilityPanel.setText("Utility");
@@ -655,7 +613,7 @@ public void createGUI(){
   dropList2 = new GDropList(this, 0, 145, 70, 150, 4);
   dropList2.setItems(loadStrings("list_948465"), 0);
   dropList2.addEventHandler(this, "dropList2_click1");
-  verifyFormat = new GCheckbox(this, 110, 75, 80, 20);
+  verifyFormat = new GCheckbox(this, 110, 80, 80, 20);
   verifyFormat.setTextAlign(GAlign.LEFT, GAlign.MIDDLE);
   verifyFormat.setText("Verify");
   verifyFormat.setOpaque(false);
@@ -666,7 +624,7 @@ public void createGUI(){
   quickFormat.setText("Quickformat");
   quickFormat.setOpaque(false);
   quickFormat.addEventHandler(this, "quickFormat_");
-  pre_erase = new GCheckbox(this, 110, 90, 70, 20);
+  pre_erase = new GCheckbox(this, 110, 100, 70, 20);
   pre_erase.setTextAlign(GAlign.LEFT, GAlign.MIDDLE);
   pre_erase.setText("pre erase");
   pre_erase.setOpaque(false);
@@ -676,7 +634,7 @@ public void createGUI(){
   Erase.addEventHandler(this, "Erase_");
   PlaceholderU = new GLabel(this, 110, 140, 80, 40);
   PlaceholderU.setOpaque(false);
-  indexAlign2 = new GCheckbox(this, 110, 105, 100, 20);
+  indexAlign2 = new GCheckbox(this, 110, 120, 100, 20);
   indexAlign2.setTextAlign(GAlign.LEFT, GAlign.MIDDLE);
   indexAlign2.setText("Index aligned");
   indexAlign2.setOpaque(false);
@@ -691,7 +649,7 @@ public void createGUI(){
   UtilityPanel.addControl(Erase);
   UtilityPanel.addControl(PlaceholderU);
   UtilityPanel.addControl(indexAlign2);
-  SettingsPanel = new GPanel(this, 870, 360, 260, 270, "Settings");
+  SettingsPanel = new GPanel(this, 1470, 360, 260, 270, "Settings");
   SettingsPanel.setCollapsible(false);
   SettingsPanel.setDraggable(false);
   SettingsPanel.setText("Settings");
@@ -866,9 +824,9 @@ public void createGUI(){
   label6.setTextBold();
   label6.setLocalColorScheme(GCScheme.RED_SCHEME);
   label6.setOpaque(false);
-  testbutton = new GImageButton(this, 658, 569, new String[] { "button_start.png", "button_start_o.png", "button_start_p.png" } );
+  testbutton = new GImageButton(this, 1258, 569, new String[] { "button_start.png", "button_start_o.png", "button_start_p.png" } );
   testbutton.addEventHandler(this, "testbutton_");
-  SCPPanel = new GPanel(this, 870, 0, 260, 180, "SCP");
+  SCPPanel = new GPanel(this, 1470, 0, 260, 180, "SCP");
   SCPPanel.setCollapsible(false);
   SCPPanel.setDraggable(false);
   SCPPanel.setText("SCP");
@@ -890,13 +848,8 @@ public void createGUI(){
   revsSlider.addEventHandler(this, "revsSlider_");
   scanDisk = new GImageButton(this, 1, 71, new String[] { "button_scan-disk.png", "button_scan-disk_o.png", "button_scan-disk_p.png" } );
   scanDisk.addEventHandler(this, "scanDisk_");
-  showhist_ = new GCheckbox(this, 6, 110, 100, 20);
-  showhist_.setText("Histogram");
-  showhist_.setOpaque(false);
-  showhist_.addEventHandler(this, "showhist_clicked");
-  showhist_.setSelected(true);
-  showflux_ = new GCheckbox(this, 6, 130, 100, 20);
-  showflux_.setText("Fluxdiagram");
+  showflux_ = new GCheckbox(this, 0, 105, 100, 20);
+  showflux_.setText("Extended View");
   showflux_.setOpaque(false);
   showflux_.addEventHandler(this, "showflux_clicked");
   showflux_.setSelected(true);
@@ -905,21 +858,14 @@ public void createGUI(){
   label7.setOpaque(false);
   PlaceholderSCP = new GLabel(this, 110, 70, 80, 40);
   PlaceholderSCP.setOpaque(false);
-  showdisk_ = new GCheckbox(this, 6, 150, 100, 20);
-  showdisk_.setText("Diskview");
-  showdisk_.setOpaque(false);
-  showdisk_.addEventHandler(this, "showdisk_clicked");
-  showdisk_.setSelected(true);
   SCPPanel.addControl(ReadSCP);
   SCPPanel.addControl(WriteSCP);
   SCPPanel.addControl(revsSlider);
   SCPPanel.addControl(scanDisk);
-  SCPPanel.addControl(showhist_);
   SCPPanel.addControl(showflux_);
   SCPPanel.addControl(label7);
   SCPPanel.addControl(PlaceholderSCP);
-  SCPPanel.addControl(showdisk_);
-  startEndPanel = new GPanel(this, 500, 580, 80, 40, "");
+  startEndPanel = new GPanel(this, 1200, 600, 80, 40, "");
   startEndPanel.setCollapsible(false);
   startEndPanel.setDraggable(false);
   startEndPanel.setOpaque(false);
@@ -958,31 +904,27 @@ public void createGUI(){
   startEndPanel.addControl(EndLabel);
   SCPButton = new GImageButton(this, 10, 90, new String[] { "button_flux-tools.png", "button_flux-tools_o.png", "button_flux-tools_p.png" } );
   SCPButton.addEventHandler(this, "SCPButton_");
-  histwindow = GWindow.getWindow(this, "Histogram", 0, 0, 600, 130, JAVA2D);
-  histwindow.noLoop();
-  histwindow.addDrawHandler(this, "histwin_draw1");
-  histPad = new GSketchPad(histwindow, 0, 0, 600, 130);
-  logcb = new GCheckbox(histwindow, 0, 105, 50, 20);
+  histPad = new GSketchPad(this, 10, 560, 582, 130);
+  logcb = new GCheckbox(this, 520, 645, 50, 20);
   logcb.setText("log10");
   logcb.setOpaque(false);
   logcb.addEventHandler(this, "logcb_");
   logcb.setSelected(true);
-  fluxwindow = GWindow.getWindow(this, "Fluxwindow", 0, 0, 830, 430, JAVA2D);
-  fluxwindow.noLoop();
-  fluxwindow.addDrawHandler(this, "fluxwin_draw1");
-  cellPad = new GSketchPad(fluxwindow, 0, 0, 830, 430);
-  revminus = new GImageButton(fluxwindow, 10, 10, 20, 20, new String[] { "left.png", "left.png", "left.png" } );
+  cellPad = new GSketchPad(this, 600, 10, 600, 345);
+  revminus = new GImageButton(this, 600, 10, 20, 20, new String[] { "left.png", "left.png", "left.png" } );
   revminus.addEventHandler(this, "revminus_click");
-  revplus = new GImageButton(fluxwindow, 35, 10, 20, 20, new String[] { "right.png", "right.png", "right.png" } );
+  revplus = new GImageButton(this, 625, 10, 20, 20, new String[] { "right.png", "right.png", "right.png" } );
   revplus.addEventHandler(this, "revplus_click");
-  diskwindow = GWindow.getWindow(this, "Disk", 0, 0, 830, 402, JAVA2D);
-  diskwindow.noLoop();
-  diskwindow.addDrawHandler(this, "disk_draw1");
-  side0 = new GSketchPad(diskwindow, 10, 1, 400, 400);
-  side1 = new GSketchPad(diskwindow, 420, 1, 400, 400);
-  histwindow.loop();
-  fluxwindow.loop();
-  diskwindow.loop();
+  side0 = new GSketchPad(this, 605, 375, 290, 290);
+  side1 = new GSketchPad(this, 905, 375, 290, 290);
+  upperLabel = new GLabel(this, 720, 665, 80, 20);
+  upperLabel.setText("Upper Side");
+  upperLabel.setTextBold();
+  upperLabel.setOpaque(false);
+  lowerLabel = new GLabel(this, 1020, 665, 80, 20);
+  lowerLabel.setText("Lower Side");
+  lowerLabel.setTextBold();
+  lowerLabel.setOpaque(false);
 }
 
 // Variable declarations 
@@ -1016,6 +958,7 @@ GCheckbox chkSumChk;
 GImageButton AutoRip; 
 GImageButton compareDisk; 
 GCheckbox fnprompt; 
+GCheckbox showhist2_; 
 GPanel WritePanel; 
 GImageButton WriteDisk; 
 GImageButton StartWrite; 
@@ -1023,6 +966,7 @@ GCheckbox verifyCheck;
 GImageButton AutoWrite; 
 GCheckbox pre_erase2; 
 GCheckbox indexAlign; 
+GCheckbox showhist3_; 
 GPanel UtilityPanel; 
 GImageButton Format; 
 GImageButton Cleaning; 
@@ -1081,11 +1025,9 @@ GImageButton ReadSCP;
 GImageButton WriteSCP; 
 GCustomSlider revsSlider; 
 GImageButton scanDisk; 
-GCheckbox showhist_; 
 GCheckbox showflux_; 
 GLabel label7; 
 GLabel PlaceholderSCP; 
-GCheckbox showdisk_; 
 GPanel startEndPanel; 
 GLabel starttrack; 
 GLabel endtrack; 
@@ -1096,13 +1038,12 @@ GImageButton end_down;
 GLabel StartLabel; 
 GLabel EndLabel; 
 GImageButton SCPButton; 
-GWindow histwindow;
 GSketchPad histPad; 
 GCheckbox logcb; 
-GWindow fluxwindow;
 GSketchPad cellPad; 
 GImageButton revminus; 
 GImageButton revplus; 
-GWindow diskwindow;
 GSketchPad side0; 
 GSketchPad side1; 
+GLabel upperLabel; 
+GLabel lowerLabel; 

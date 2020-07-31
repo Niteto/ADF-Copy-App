@@ -50,9 +50,7 @@ public amigaTime makeTime()
       dtyear--;
     }
   }
-  //    println("days: " + aTime.day + " mins: " + aTime.min + " ticks: " + aTime.ticks);
   return aTime;
-  //day*86400+min*60;
 }
 
 void printBuffer() {

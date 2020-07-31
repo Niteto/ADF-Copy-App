@@ -17,29 +17,15 @@ void setupGUI()
 {
   surface.setTitle(versionString+": Creating GUI");
   createGUI();
-  //histwindow.setVisible(showhist);
-  //fluxwindow.setVisible(false);
-  //diskwindow.setVisible(false);
-  java.awt.Frame mainframe =  (java.awt.Frame) ((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame();
-  if (mainframe.getHeight()+histwindow.height < displayHeight)
-    histwindow.setLocation(mainframe.getX(), mainframe.getY()+mainframe.getHeight());
-  //if (mainframe.getWidth()+fluxwindow.width < displayWidth)
-  //  fluxwindow.setLocation(mainframe.getX()+mainframe.getWidth(), mainframe.getY());
-  //if (mainframe.getHeight()+diskwindow.width < displayWidth)
-  //  diskwindow.setLocation(mainframe.getX()+mainframe.getWidth(), mainframe.getY()+fluxwindow.height+30);
-  //println((java.awt.Frame) ((processing.awt.PSurfaceAWT.SmoothCanvas)fluxwindow.getSurface().getNative()).getFrame());
-  //println((java.awt.Frame) ((processing.awt.PSurfaceAWT.SmoothCanvas)diskwindow.getSurface().getNative()).getFrame());
-
   upperGrid = createGraphics(180, 180);
   lowerGrid = createGraphics(180, 180);
-  flux = createGraphics(360, 360);
-  histogram = createGraphics((int)histPad.getWidth(), (int)histPad.getHeight());
-  cellgraph = createGraphics((int)cellPad.getWidth(), (int)cellPad.getHeight());
+  flux      = createGraphics(360, 360);
+  histogram = createGraphics(570, 130);
+  cellgraph = createGraphics(830, 430);
   diskside0 = createGraphics(400, 400);
   diskside1 = createGraphics(400, 400);
-
   progress = createGraphics(160, 10);
-  active = createGraphics((int)activePad.getWidth(),(int)activePad.getHeight());
+  active = createGraphics((int)activePad.getWidth(), (int)activePad.getHeight());
   status = createGraphics(370, 20);
   logo = createGraphics(170, 127);
   diskinfo = createGraphics(170, 100);
@@ -57,12 +43,7 @@ void setupGUI()
   drawHistwindow(histogram, 0);
   drawFluxwindow(cellgraph, 0, false);
   drawDiskwindow();
-  //print("Monitor display resolution is ");
-  //println(displayWidth + " x " + displayHeight);
-  //println(f.getHeight());
-  //println(f.getWidth());
   try {
-    //myFont = java.awt.Font.createFont(Font.TRUETYPE_FONT, new File(dataPath("")+fileSep+myFontName)).deriveFont(myFontSize);
     GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     boolean regRes = ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, 
       new File(dataPath("")+fileSep+myFontName)).deriveFont(myFontSize));
@@ -144,9 +125,9 @@ void setupGUI()
   verifyCheck.setFont(myFont);
   pre_erase2.setFont(myFont);
   indexAlign.setFont(myFont);
-  showhist_.setFont(myFont);
+  showhist2_.setFont(myFont);
+  showhist3_.setFont(myFont);
   showflux_.setFont(myFont);
-  showdisk_.setFont(myFont);
   mtpMode_.setFont(myFont);
   logcb.setFont(myFont);
   drvRestartLabel.setFont(myFont);
@@ -175,7 +156,6 @@ void setupGUI()
   filepathandname.setTextEditEnabled(false);
   aboutText.setTextEditEnabled(false);
   aboutText.setFont(myFont);
-  //  aboutText.textSize(14);  
   aboutText.setText(
     "ADF-Copy App - Frontend to Read and Write Amiga Floppy Disks\n"+
     "Copyright (C) 2020 Dominik Tonn (nick@niteto.de)\n"+
@@ -196,43 +176,10 @@ void setupGUI()
     "You should have received a copy of the GNU General Public License "+
     "along with this program.  \nIf not, see http://www.gnu.org/licenses/");
   surface.setIcon(checkmark);
-  histwindow.getSurface().setIcon(checkmark);
-  fluxwindow.getSurface().setIcon(checkmark);
-  diskwindow.getSurface().setIcon(checkmark);
-  Frame fluxframe = ((processing.awt.PSurfaceAWT.SmoothCanvas)fluxwindow.getSurface().getNative()).getFrame();
-  fluxframe.setSize(830,460);
-  Frame diskframe = ((processing.awt.PSurfaceAWT.SmoothCanvas)diskwindow.getSurface().getNative()).getFrame();
-  diskframe.setSize(830,437);
-  if (mainframe.getX()+mainframe.getWidth()+fluxframe.getWidth() < displayWidth){
-    fluxwindow.setLocation(mainframe.getX()+mainframe.getWidth(), mainframe.getY());
-    //println("moved flux");
-  }
-  //fluxwindow.setLocation(695,53);
-  if ((fluxframe.getY()+fluxframe.getHeight()+diskframe.getHeight()) < displayHeight)
-  {
-    diskwindow.setLocation(fluxframe.getX(), fluxframe.getY()+fluxframe.getHeight());
-    //println("moved disk");
-  }
-  //diskwindow.setLocation(695,513);
-
-  ((processing.awt.PSurfaceAWT.SmoothCanvas)histwindow.getSurface().getNative()).getFrame().setFocusableWindowState(false);
-  ((processing.awt.PSurfaceAWT.SmoothCanvas)fluxwindow.getSurface().getNative()).getFrame().setFocusableWindowState(false);
-  ((processing.awt.PSurfaceAWT.SmoothCanvas)diskwindow.getSurface().getNative()).getFrame().setFocusableWindowState(false);
-  fluxframe.setVisible(false);
-  diskframe.setVisible(false);
-  //fluxframe.
-  //diskframe.disable();
-  //println((java.awt.Frame) ((processing.awt.PSurfaceAWT.SmoothCanvas)fluxwindow.getSurface().getNative()).getFrame());
-  //println((java.awt.Frame) ((processing.awt.PSurfaceAWT.SmoothCanvas)diskwindow.getSurface().getNative()).getFrame());
-  //println(diskwindow.width + " " + diskwindow.height);
-  //println(fluxwindow.width + " " + fluxwindow.height);
   diskInfo(true);
-  showhist_.setSelected(showhist);
+  showhist2_.setSelected(showhist);
+  showhist3_.setSelected(showhist);
   showflux_.setSelected(showflux);
-  showdisk_.setSelected(showdisk);
-  histwindow.draw();
-  fluxwindow.draw();
-  diskwindow.draw();
 }
 
 void grid(PGraphics thisGrid, int side)
@@ -273,7 +220,6 @@ void grid(PGraphics thisGrid, int side)
     int tempy = (focusTrack/2)/10;
     thisGrid.strokeWeight(focusStroke);
     thisGrid.fill(trackmap[focusTrack]);
-    //println(j+i*10);
     thisGrid.rect(x+tempx*size, y+tempy*size, size, size, 3);
     thisGrid.fill(0, 0, 0);
     thisGrid.textSize(10);
@@ -334,6 +280,20 @@ void drawActive(PGraphics tP, int i)
   startEndPanel.moveTo(2000, 20);
   UtilityPanel.moveTo(2000, -20);
   SettingsPanel.moveTo(2000, 10);
+  if (i!=2) {
+    if (showhist) {
+      drawHistwindow(histogram, 0);
+      setWindowMode(1);
+    } else {
+      setWindowMode(0);
+    }
+  } else {
+    showhist = true;
+    showhist2_.setSelected(true);
+    showhist3_.setSelected(true);
+    if (showflux) setWindowMode(2);
+    else setWindowMode(1);
+  }
   /*
   ReadPanel.setVisible(false);
    WritePanel.setVisible(false);
@@ -382,11 +342,11 @@ void drawActive(PGraphics tP, int i)
   tP.clear();
   tP.fill(255, 255, 255, 96);
   tP.noStroke();
-  if (i>=0){
+  if (i>=0) {
     tP.rect(0, 0+(40*i), 100, 30, 5);
     tP.fill(0, 0, 0, 64);
-    tP.rect(95, 0+(40*i), 5, 30, 0,5,5,0);
-    tP.triangle(90, 15+(40*i),95,0+(40*i), 95, 30+(40*i));
+    tP.rect(95, 0+(40*i), 5, 30, 0, 5, 5, 0);
+    tP.triangle(90, 15+(40*i), 95, 0+(40*i), 95, 30+(40*i));
   }
   tP.endDraw();
 }
@@ -397,7 +357,6 @@ void drawStatus(PGraphics tS, String text)
   tS.beginDraw();
   tS.background(255);
   tS.textFont(myPFont);
-  //  tS.textSize(12);
   tS.fill(0);
   tS.text(text, 2, 15);
   tS.endDraw();
@@ -432,7 +391,6 @@ void drawLogo(PGraphics tL)
     }
   }
   tL.beginDraw();
-  //tL.background(255);
   tL.image(img, 0, 0);
   tL.image(img2, 70, 97, 100, 30);
   tL.textSize(14);
@@ -475,7 +433,6 @@ void drawHistgfx(PGraphics tF, boolean HDImage)
   tF.text("0", 30, 340);
   tF.text("40", 180, 340);
   tF.text("79", 340, 340);
-  //rect(40, 360, 320, 280, 7);
   for (int j =0; j<160; j++) {
     if (weak[j]>0) {
       if (weak[j]==25) {
@@ -490,8 +447,6 @@ void drawHistgfx(PGraphics tF, boolean HDImage)
       if (tHist>0) {
         tF.stroke(tHist/2, tHist/8, tHist/64);
         tF.rect(30+j*2, 400-i*2+offset, 1, 1);
-        //        point(40+j*2, 240+i*2);
-        //        point(40+j*2+1, 240+i*2);
       }
     }
   }
@@ -508,13 +463,12 @@ void drawFluxwindow(PGraphics tF, int track, boolean HDImage)
   int yoff = 50;
   int ysize = 360;
   int xsize = 800;
-  int xfactor = 200000000/xsize;
   int yfactor = 40;
   int ystart = 1;
   tF.noFill();
   tF.stroke(0, 0, 0);
   tF.strokeWeight(1);
-  tF.textSize(10);
+  tF.textSize(12);
   tF.textAlign(CENTER, CENTER);
   for (int i = 0; i<=200; i+=10) {
     tF.fill(0, 102, 153);
@@ -525,10 +479,10 @@ void drawFluxwindow(PGraphics tF, int track, boolean HDImage)
     tF.line(i*4+xoff, ysize+yoff, i*4+xoff, ysize+yoff-5);
     tF.stroke(0, 0, 0);
   }
+  tF.textAlign(RIGHT, CENTER);
   for (int i = ystart; i<=10; i++) {
     tF.fill(0, 102, 153);
-    tF.text(""+i, xoff/2, ysize+yoff+ystart*yfactor-i*yfactor);
-    //println(""+ i + ": " + (ysize+yoff+ystart*yfactor-i*yfactor));
+    if (i!=1) tF.text(""+i, xoff-4, ysize+yoff+ystart*yfactor-i*yfactor);
     tF.stroke(0xffbbbbbb);
     tF.line(xoff, ysize+yoff+ystart*yfactor-i*yfactor, xsize+xoff, ysize+yoff+ystart*yfactor-i*yfactor);
     if (i!=ystart)
@@ -544,7 +498,6 @@ void drawFluxwindow(PGraphics tF, int track, boolean HDImage)
   int fluxpos = 0;
   int tCell = 0;
   tF.stroke(0, 0, 200);
-  int tZeit = millis();
   tF.textAlign(CENTER, CENTER);
   tF.endDraw();
 
@@ -559,11 +512,6 @@ void drawFluxwindow(PGraphics tF, int track, boolean HDImage)
   int maxFlux = 0;
   int fluxcount = 0;
   int t3 = 0;
-  //for (int i = 0; i<revsInBuffer; i++)
-  //{
-  //  print("rp["+i+"]: " + revpointer[track][i]);
-  //  println(" len: " + (revpointer[track][i+1]-revpointer[track][i]));
-  //}
   for (int i = revpointer[track][rev]; i < revpointer[track][rev+1]; i+=2)
   {
     tCell = (((int)bytebuffer[track][i]<<8) + ((int)bytebuffer[track][i+1] & 0xff) & 0xffff)*25; //tCell in nanoseconds
@@ -589,17 +537,14 @@ void drawFluxwindow(PGraphics tF, int track, boolean HDImage)
         for (int j = 0; j<10; j++)
           p[x+y*tF.width + j*tF.width]=color(255, 0, 0);
       }
-      //      tF.point(xoff+(fluxpos/xfactor), ysize+yoff+ystart*yfactor-((float)(tCell*yfactor)/1000));
       fluxpos = fluxpos + tCell;
     }
   }
-  //println(fluxpos);
   tF.updatePixels();
   loop();
   if (revpointer[track][rev+1]>0)
   {
     decode2mfm(track, rev, true);
-    //    decodeTrack(track, sectorCnt);
   }
   String fluxrange;
   if (minFlux<maxFlux)
@@ -610,24 +555,19 @@ void drawFluxwindow(PGraphics tF, int track, boolean HDImage)
   tF.strokeWeight(1);
   for (int i = 0; i<sectorCnt; i++)
   {
-    //tF.strokeWeight(0);
-    //tF.noStroke();
-    //tF.fill(0,200,0);
-    //tF.rect(15+((sectorTable[i].streamPos+28*8*4000)/250000), yoff, (512*8*4000/250000), ysize);
     tF.stroke(200, 0, 0);
     tF.noFill();
     tF.line(15+(sectorTable[i].streamPos/250000), yoff, 15+(sectorTable[i].streamPos/250000), yoff+ysize);
   }
   tF.strokeWeight(1);
-  tF.textSize(14);
+  tF.textSize(17);
   tF.fill(0, 50, 200);
   tF.textAlign(LEFT, TOP);
   tF.text("Rev " + (rev+1) + " / " + revsInBuffer + " - Track " + track/2 + "." + track%2 + 
     " - Fluxrange: " + fluxrange + " - Flux count: " + fluxcount + " Sectormarks: " + sectorCnt, 
-    xoff+50, 10);
+    xoff+60, 0);
 
   tF.endDraw();
-  //println("drawtime: " + (millis()-tZeit));
   lastTrack = track;
 }
 
@@ -650,6 +590,7 @@ void drawDiskwindow()
   diskside1.beginDraw();
   diskside0.background(230);
   diskside1.background(230);
+  
   //outside circle of disk
   diskside0.fill(100, 100, 100);
   diskside1.fill(100, 100, 100);
@@ -657,11 +598,13 @@ void drawDiskwindow()
   diskside1.noStroke();
   diskside0.circle(xsize/2, ysize/2, diameter+10); 
   diskside1.circle(xsize/2, ysize/2, diameter+10);
+
   //magnetic surface
   diskside0.fill(50, 50, 50);
   diskside1.fill(50, 50, 50);
   diskside0.circle(xsize/2, ysize/2, diameter); 
   diskside1.circle(xsize/2, ysize/2, diameter);
+
   //non magnetic inner ring
   diskside0.stroke(0, 0, 0);
   diskside1.stroke(0, 0, 0);
@@ -671,16 +614,16 @@ void drawDiskwindow()
   diskside1.fill(100, 100, 100);
   diskside0.circle(xsize/2, ysize/2, diameter-(outerTrack)*scale);
   diskside1.circle(xsize/2, ysize/2, diameter-(outerTrack)*scale);
+
   //diskhub
   diskside0.fill(255, 255, 255);
   diskside1.fill(255, 255, 255);
   diskside0.circle(xsize/2, ysize/2, hub);
   diskside1.circle(xsize/2, ysize/2, hub);
+
   //index hole
   diskside0.circle(xsize/2+((diameter-(outerTrack)*scale)+hub)/4, ysize/2, 10);
   diskside1.circle(xsize/2+((diameter-(outerTrack)*scale)+hub)/4, ysize/2, 10);
-  //diskside0.circle(xsize/2+(111/2), ysize/2, 10);
-  //diskside1.circle(xsize/2+(111/2), ysize/2, 10);
 
   diskside0.strokeWeight(2);
   diskside1.strokeWeight(2);
@@ -695,9 +638,6 @@ void drawDiskwindow()
     if (magic4489 == 0)
     {
       side.noFill();
-      //side.stroke(180, 180, 180);
-      //side.strokeWeight(3);
-      //side.arc(xsize/2, ysize/2, diameter-(i/2)*scale, diameter-(i/2)*scale, 0, 2*PI);
       side.stroke(255, 0, 0);
       side.strokeWeight(stroke);
       side.arc(xsize/2, ysize/2, diameter-(i/2)*scale, diameter-(i/2)*scale, 0, 2*PI);
@@ -706,18 +646,12 @@ void drawDiskwindow()
       side.noFill();
       side.stroke(0, 0, 255);
       side.strokeWeight(stroke);
-      //side.arc(xsize/2, ysize/2, diameter-(i/2)*scale, diameter-(i/2)*scale, 0, 2*PI);
       for (int j = 0; j<magic4489; j++)
       {
         side.noFill();
         header = ((float)sectorTable[j].streamPos/100000000f)*PI;
         data = header + ((float)(28f*8f*4000f/100000000f))*PI;
         end = data + ((float)(512f*8f*4000f/100000000f))*PI;
-        //println("track: " + i + " sect: " + j + " start: "+header+" end: "+end);
-        //tF.line(15+(sectorTable[i].streamPos/250000), yoff, 15+(sectorTable[i].streamPos/250000), yoff+ysize);
-        //side.strokeWeight(3);
-        //side.stroke(180, 180, 180);
-        //side.arc(xsize/2, ysize/2, diameter-(i/2)*scale, diameter-(i/2)*scale, 2*PI-end, 2*PI-header);
         side.strokeWeight(stroke);
         if (sectorTable[j].hcs_ok == true)
           side.stroke(255, 255, 0);
@@ -752,14 +686,13 @@ void drawHistwindow(PGraphics tF, int track)
 {
   if (!showhist) return;
   if (track<0 | track>167) return;
-  int xoff = 50;
-  int yoff = 10;
+  int xoff = 14;
+  int yoff = 0;
+  int txoff = 20;
+  int tyoff = 5;
   int ysize = 110;
   int xsize = 540;
   int xfactor = xsize/9;
-  int yfactor = 40;
-  int xscale = 1;
-  int ystart = 1;
   tF.beginDraw();
   tF.background(230);
   long tHist;
@@ -791,11 +724,7 @@ void drawHistwindow(PGraphics tF, int track)
       tF.line((i-1)*xfactor+xoff, yoff+ysize, (i-1)*xfactor+xoff, ysize+yoff/2);
     }
   }
-  tF.textAlign(CENTER, CENTER);
-  //if (histResHD) tF.text("HD", 20, 60);
-  //else tF.text("DD", 20, 60);
-  //tF.text("6000", 20, 50);
-  //rect(40, 360, 320, 280, 7);
+  tF.textAlign(LEFT, CENTER);
   boolean logScale = logcb.isSelected();
   float scale = 1;
   long tMax = (findMax(track)/1000+1)*1000;
@@ -806,19 +735,18 @@ void drawHistwindow(PGraphics tF, int track)
     else scale = (float)ysize/tMax;
   } else scale = 1;
   if (!logScale) {
-    tF.text(""+tMax, xoff/2, yoff);
+    tF.text(""+tMax, txoff, tyoff);
     tF.line(xoff, yoff, xoff+5, yoff);
-    tF.text(""+tMax/2, xoff/2, yoff+ysize/2);
+    tF.text(""+tMax/2, txoff, tyoff+ysize/2);
     tF.stroke(#bbbbbb);
     tF.line(xoff, yoff+ysize/2, xoff+xsize, yoff+ysize/2);
     tF.stroke(0, 0, 0);
     tF.line(xoff, yoff+ysize/2, xoff+5, yoff+ysize/2);
   } else {
-    tF.text(""+tMax, xoff/2, yoff);
-    //tF.text(""+tMax/10, xoff/2, ysize+yoff-log10(tMax/10)*scale);
-    tF.text("10", xoff/2, ysize+yoff-log10(10)*scale);
-    tF.text("100", xoff/2, ysize+yoff-log10(100)*scale);
-    tF.text("1000", xoff/2, ysize+yoff-log10(1000)*scale);
+    tF.text(""+tMax, txoff, tyoff);
+    tF.text("10", txoff, ysize+tyoff-log10(10)*scale);
+    tF.text("100", txoff, ysize+tyoff-log10(100)*scale);
+    tF.text("1000", txoff, ysize+tyoff-log10(1000)*scale);
     tF.stroke(#bbbbbb);
     tF.line(xoff, yoff, xoff+5, yoff);
     tF.line(xoff, ysize+yoff-log10(10)*scale, xoff+xsize, ysize+yoff-log10(10)*scale);
@@ -833,8 +761,6 @@ void drawHistwindow(PGraphics tF, int track)
   tF.fill(#e86100);
   tF.stroke(#222222);
   tF.beginShape();
-  //tF.vertex(24*4-96+50, 170);
-  //tF.vertex(24*4-96+50, 170);
   tF.vertex(xoff, ysize+yoff);
   tF.vertex(xoff, ysize+yoff);
   //1µs = 24 ticks
@@ -947,4 +873,13 @@ void enableButtons(boolean read, boolean write)
     dropList2.setEnabled(true);
     dropList2.setAlpha(255);
   }
+}
+
+int viewsize[][] = {{600, 560}, {600, 690}, {1200, 690}, {1200, 690}};
+void setWindowMode(int mode)
+{
+  Insets insets = ((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame().getInsets();
+  if (debug) println(insets);
+  ((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame().
+    setSize(viewsize[mode][0]+insets.left+insets.right, viewsize[mode][1]+insets.top+insets.bottom);
 }

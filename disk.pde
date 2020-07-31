@@ -204,11 +204,6 @@ void diskInfo(boolean blank)
     diskinfo.text(array[6], 62, 84);
     diskinfo.text("Blocks Free:", 1, 98);
     diskinfo.text(array[9], 62, 98);
-
-    for (int i = 0; i<tempArray.length-1; i++)
-    {
-      //    diskinfo.text(array[i], 2, 10*(i+1));
-    }
     diskinfo.endDraw();
     getBitmap();
     drawBitmap(bitmap, false);
@@ -271,7 +266,6 @@ void getWeak(int track)
   }
   weak[track] = myPort.read();
   if (weak[track] > 2) {
-    //    println("Track: "+track+" Retries: "+weak[track]);
     trackmap[track]=#ffff00;
   } else {
     trackmap[track]=#00ff00;
@@ -404,14 +398,12 @@ void getTracks()
 
     for (int i = start; i<stop; i++) {
       if (abort==true) {
-        //abort = false;
         stop = i;
         drawStatus(status, "Aborting by User request...");
         break;
       }
       drawProgress(progress, i);
       myPort.write("get "+i+"\n");
-      //println("error");
       myPort.write("error\n");
       while (myPort.available()==0) {
         delay(5);
@@ -430,8 +422,6 @@ void getTracks()
           retry = true;
         }
       }       
-      //      myPort.clear();
-      //println("weak");
       getWeak(i);
       drawStatus(status, "Track: " + i+" Errors: "+errors);
       if (errormap[i]!=0) {
@@ -441,7 +431,6 @@ void getTracks()
         grid(upperGrid, 0);
         grid(lowerGrid, 1);
         if (ignoreChksumErr==false) {
-          //          int choice = showConfirmDialog(((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame(), "Retry?", "Checksum or Read error at Track "+i, YES_NO_CANCEL_OPTION);
           Object[] options = {"Retry", "Ignore", "Abort"};
           int choice = JOptionPane.showOptionDialog(((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame(), 
             "Checksum or Read error at Track "+i, 
@@ -465,7 +454,6 @@ void getTracks()
           }
         }
       }
-      //println("dump");
       grid(upperGrid, 0);
       grid(lowerGrid, 1);
       if (getMode()==1) {
@@ -486,7 +474,6 @@ void getTracks()
 
       if (retry==false) dstream.write(track, 0, 512*sectors);
       timeLabel.setText("Time remaining: "+((millis()-zeit)*160/(i+1)-(millis()-zeit))/1000+"s");
-      //println("flux");
       if (retry) {
         i--;
         retry = false;
@@ -599,7 +586,6 @@ void readscp_main()
 
     for (int i = start; i<stop; i++) {
       if (abort==true) {
-        //abort = false;
         stop = i;
         drawStatus(status, "Aborting by User request...");
         break;
@@ -634,26 +620,28 @@ void readscp_main()
         }
         packetsReceived++;
         myPort.readBytes(buffer);
-        //        println("Buf[0]: " + buffer[0] + " Buf[1]: " +buffer[1]);
         buflen = ((buffer[1]<<8)&0x0000ff00) + (buffer[0] & 0x000000ff);
         tempcells += buflen;
-                //println(buflen + " cells read.");
         for (int k = 0; k<buflen; k++) {
           cellbuffer[cellpointer]=((buffer[3+k*2]<<8) & 0x0000ff00) + (buffer[2+k*2] & 0x000000ff);
           cellpointer++;
         }
       }
-      //println("first cell: " + cellbuffer[0]);
-      println("Cells: "+(cellpointer-1) + " readtime: "+ (millis()-interval) + " ms TempCells: " + tempcells);
-      //for (int j = 0; j<10; j++) {
-      //  print(cellbuffer[j]);
-      //  print(" ");
-      //}
+      if (debug) println("Cells: "+(cellpointer-1) + " readtime: "+ (millis()-interval) + " ms TempCells: " + tempcells);
       getIndexes(revs);
       int transCount = getTransferred();
       int packetsSent = getPacketCount();
-      println("Transfered cells: " + transCount + " Packets read: " + packetsReceived + " expected: " + packetsSent + " last buf: " + buflen);
+      if (debug) println("Transfered cells: " + transCount + " Packets read: " + packetsReceived + " expected: " + packetsSent + " last buf: " + buflen);
       if (transCount<indexes[revs-1][1]) {
+        println("Cells: "+(cellpointer-1) + " readtime: "+ (millis()-interval) + " ms TempCells: " + tempcells);
+        println("Transfered cells: " + transCount + " Packets read: " + packetsReceived + " expected: " + packetsSent + " last buf: " + buflen);
+        for (int l = 0; l<revs; l++) {
+          print("rev: " + l + " - ");
+          print(indexes[l][0]+"ms ");
+          print(indexes[l][1]+" bcells ");
+          print(indexes[l][2]+" trans");
+          println();
+        }
         drawStatus(status, "Transfer Error");
         showMessageDialog(((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame(), "Buffer underflow, maybe your USB port is too slow.", "Information", INFORMATION_MESSAGE);
         enableButtons(false, true);
@@ -661,13 +649,22 @@ void readscp_main()
         return;
       }
       if (packetsReceived!=packetsSent) {
+        println("Cells: "+(cellpointer-1) + " readtime: "+ (millis()-interval) + " ms TempCells: " + tempcells);
+        println("Transfered cells: " + transCount + " Packets read: " + packetsReceived + " expected: " + packetsSent + " last buf: " + buflen);
+        for (int l = 0; l<revs; l++) {
+          print("rev: " + l + " - ");
+          print(indexes[l][0]+"ms ");
+          print(indexes[l][1]+" bcells ");
+          print(indexes[l][2]+" trans");
+          println();
+        }
         drawStatus(status, "Transfer Error");
         showMessageDialog(((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame(), "Packet loss detected, maybe your USB port is too slow.", "Information", INFORMATION_MESSAGE);
         enableButtons(false, true);
         if (!scanonly) fstream.close();
         return;
       }
-      for (int l = 0; l<revs; l++) {
+      if (debug) for (int l = 0; l<revs; l++) {
         print("rev: " + l + " - ");
         print(indexes[l][0]+"ms ");
         print(indexes[l][1]+" bcells ");
@@ -676,47 +673,25 @@ void readscp_main()
       }
       cellpointer = 1;
       int lastCell = cellbuffer[0];
-      //      println("lastcell: "+lastCell);
       int t1, t2, overflow;
       overflow=0;
       for (int r = 0; r<revs; r++) {
-        //println("Range: " + cellpointer + " - " + indexes[r][1]);
         for (int k = cellpointer; k<=indexes[r][1]; k++)
         {
           if ((cellbuffer[k]== 0) && (cellbuffer[k-1]<72)) // to compensate for isr latency, 1,5µs worst case assumed
           {
-            //for (int p = -3; p<4; p++)
-            //  print("[k("+p+")]: " + cellbuffer[k+p]+" ");
-            //println(" pre");
-
             cellbuffer[k]= cellbuffer[k-1];
             cellbuffer[k-1]=0;
-
-            //for (int p = -3; p<4; p++)
-            //  print("[k("+p+")]: " + cellbuffer[k+p]+" ");
-            //println(" post");
           }
           if ((cellbuffer[k]== 0) && (cellbuffer[k+1]>(65536-72))) // to compensate for isr latency, 1,5µs worst case assumed
           {
-            //for (int p = -3; p<4; p++)
-            //  print("[k("+p+")]: " + cellbuffer[k+p]+" ");
-            //println(" pre_large");
-
             cellbuffer[k]= cellbuffer[k+1];
             cellbuffer[k+1]=0;
-
-            //for (int p = -3; p<4; p++)
-            //  print("[k("+p+")]: " + cellbuffer[k+p]+" ");
-            //println(" post_large");
           }
         }
         int trackduration = 0;
-        //if (overflow !=0) println("overflow: " + overflow);
-        //overflow=0;
-        //        println("indexes[" + r +"][1]: " + indexes[r][1]);
         float diff = 0;
         for (int k = cellpointer; k<indexes[r][1]; k++) {
-
           if (cellbuffer[k] == 0) {
             overflow += 0x10000;
           } else {
@@ -742,7 +717,7 @@ void readscp_main()
               for (int p = -8; p<9; p++)
                 print("[k("+p+")]:" + cellbuffer[k+p]+" ");
               println();
-              //        showMessageDialog(((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame(), "negative error", "Information", INFORMATION_MESSAGE);
+              showMessageDialog(((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame(), "Negative cell error, image might be faulty", "Information", INFORMATION_MESSAGE);
             }
 
             if (r==0) {
@@ -774,27 +749,13 @@ void readscp_main()
             }
           }
         }
-        //println("diff: "+ diff/40);
-        //println("cellpointer " + cellpointer + " indexes["+r+"][1] " + indexes[r][1] + " outpointer " + outpointer);
-        //println("trackduration: " + trackduration);
         cellpointer = indexes[r][1];
         indexes[r][1] = outpointer-1;
         indexes[r][3] = trackduration;
       }
-      //for (int r = 0; r<revs; r++) {
-      //  for (int s = 0; s<3; s++) {
-      //    print(indexes[r][s]+" ");
-      //  }
-      //  println();
-      //}
-      //      drawHist(histogram, i, false);
       drawHistwindow(histogram, i);
       drawHistgfx(flux, false);
       focusTrack = i;
-      //println("cellbuffer convert: "+ (millis()-interval) + " ms");
-      //print("Cellpointer: "+cellpointer);
-      //print(" Outpointer: "+outpointer);
-      //println(" Overflows: "+hist[i][1] + " Longcells: " + hist[i][0] + " Longbits: " + longbits);
       myPort.clear();
       if (!scanonly) {
         fstream.seek(fstream.length());
@@ -802,22 +763,17 @@ void readscp_main()
         interval = millis();
         fstream.writeBytes("TRK");
         fstream.writeByte(i); // Track Number
-        //      fstream.writeInt(Integer.reverseBytes(indexes[0][0]*40));    // time from index 2 index in ns/25ns
         fstream.writeInt(Integer.reverseBytes(indexes[0][3]));    // time from index 2 index in ns/25ns
-        //      fstream.writeInt(Integer.reverseBytes(8000000));    // time from index 2 index in ns/25ns
         fstream.writeInt(Integer.reverseBytes(indexes[0][1]));    // cellcount of revolution
         fstream.writeInt(Integer.reverseBytes(revs*12+4));    // offset to trackdata starting from "TRK"
       }
-      //      println("[0]: "+ indexes[0][3] + " " + indexes[0][1] + " " + revs*12+4);    // time from index 2 index in ns/25ns
       for (int r = 1; r < revs; r++) {
-        //        fstream.writeInt(Integer.reverseBytes(indexes[r][0]*40));    // time from index 2 index in ns/25ns
         if (!scanonly) {
           fstream.writeInt(Integer.reverseBytes(indexes[r][3]));    // time from index 2 index in ns/25ns
           fstream.writeInt(Integer.reverseBytes((indexes[r][1])-indexes[r-1][1]));    // cellcount of revolution
           fstream.writeInt(Integer.reverseBytes((revs*12+4)+indexes[r-1][1]*2));    // offset to trackdata starting from "TRK"
         }
         revpointer[i][r]=indexes[r-1][1]*2;
-        //        println("[" + r +"]: "+ indexes[r][3] + " " + (indexes[r][1]-indexes[r-1][1]) + " " + ((revs*12+4)+indexes[r-1][1]*2));    // time from index 2 index in ns/25ns
       }
       revpointer[i][0]=2;
       revpointer[i][revs]=outpointer*2-2;
@@ -831,7 +787,7 @@ void readscp_main()
       grid(upperGrid, 0);
       grid(lowerGrid, 1);
       timeLabel.setText("Time remaining: "+((millis()-zeit)*(stop+1)/(i+1)-(millis()-zeit))/1000+"s");
-      //println("Capturetrack: "+ (millis()-interval) + " ms");
+      if (debug) println("Capturetrack: "+ (millis()-interval) + " ms");
     }
     if (!scanonly) {
       fstream.seek(0x10);
@@ -840,10 +796,8 @@ void readscp_main()
       }
       fstream.seek(fstream.length());
       String timestamp = LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("M/d/yyyy hh:mm:ss a"));
-      //println(timestamp);
-      //fstream.writeBytes("7/17/2013 12:45:49 PM"+"\n");
       fstream.writeBytes(timestamp+"\n");
-      /*checksumme updaten*/
+      /* toDo checksum update */
       fstream.close();
     }    
     zeit = millis()-zeit;
@@ -852,9 +806,6 @@ void readscp_main()
         drawStatus(status, "Download aborted. "+(stop-start)+" Tracks read in "+(zeit/1000)+" Seconds");
       else
         drawStatus(status, "Download complete. "+(stop-start)+" Tracks read in "+(zeit/1000)+" Seconds");
-      //noLoop();
-      //redraw();
-      //loop();
       timeLabel.setText("Done");
     }
   }   
@@ -929,7 +880,7 @@ void loadSCP(File selection) {
     int heads =  fstream.readUnsignedByte();   // Heads -  0x00 = both Heads
     int resolution  = fstream.readUnsignedByte();   // resolution - 0x00 = 25ns
     int checksum  = Integer.reverseBytes(fstream.readInt());    // checksum (Java Int is 32 bit)
-    println("Ver: "+version+" Type: "+disk_type+" Revs: "+revs+" Start: "+start+"Stop: "+stop+
+    if (debug) println("Ver: "+version+" Type: "+disk_type+" Revs: "+revs+" Start: "+start+"Stop: "+stop+
       " IndexMarks: "+index_marks+ " Cell Size: "+bit_cell_size+" Heads: "+heads+" Res: "+resolution+" Checksum: "+checksum);
     for (int j=0; j<168; j++) {
       trackTable[j]=Integer.reverseBytes(fstream.readInt());
@@ -974,10 +925,7 @@ void loadSCP(File selection) {
       focusTrack = j;
       grid(upperGrid, 0);
       grid(lowerGrid, 1);
-      //      drawFlux(flux, false);
-      //      drawHist(histogram, i, false);
-      //      drawFlux(flux, false);
-      println("Loadtrack: "+ (millis()-interval) + " ms");
+      if (debug) println("Loadtrack: "+ (millis()-interval) + " ms");
     }
     fstream.close();
     drawDiskwindow();
@@ -1052,20 +1000,14 @@ int decode2mfm(int track, int rev, boolean silent)
     }
     readBuff2 &= 0x7ffffffffl;
     if ((readBuff2 & readmask) == 0xA4489448l)
-      //if ((readBuff2 & readmask) == 0x2244a244l)
-      //if (magicfind(readBuff2, 0x44894489) != 0)
     { // look for magic word. usually 44894489, but detecting this way its
       // easier to byte align the received bitstream from floppy
       if (!silent) println("magic at: " + fluxtime + " rb2: " + String.format("0x%016X", readBuff2 & readmask));
-      //      println("magic at: " + fluxtime + " " +magicfind(readBuff2, 0x44894489));
-      //if (sectorCnt != 0)
-      //  if ((readPtr-7)==sectorTable[sectorCnt-1].bytePos) continue;
+      if (debug) println("magic at: " + fluxtime + " " +magicfind(readBuff2, 0x44894489));
       sectorTable[sectorCnt].bytePos = readPtr - 7;
       sectorTable[sectorCnt].streamPos = fluxtime;
       sectorCnt++;
       bCnt = 4; // set bit count to 4 to align to byte a4489448
-      //bCnt = 7; // set bit count to 4 to align to byte 2244a244
-      //bCnt = 8 - magicfind(readBuff2, 0x44894489);
       if (sectorCnt >=maxSectors) break;
     }
     if ((streampointer >= revpointer[track][rev+1])) // stop when buffer is full
@@ -1610,7 +1552,6 @@ byte [] generateImage(String diskName, boolean HD)
   image[rootBlockPos*512+0x1b0]=(byte)diskName.length();
   image[rootBlockPos*512+0x1ff]= 1; //secType
   amigaTime aTime = makeTime();
-  //  println("Days: " + aTime.day + " mins: " + aTime.min + " ticks: " + aTime.ticks);
 
   //creation date FFS and OFS
   image[rootBlockPos*512+0x1a4]=(byte)(byte) (aTime.day>>24 & 0xff); //cDays
@@ -1756,7 +1697,6 @@ void formatTracks()
 
   byte image[] = generateImage(diskName, HDImage);
   int imageSize = image.length;
-  //imageSize=0;
   switch (imageSize) {
   case 901120:
     HDImage = false;
@@ -1891,8 +1831,6 @@ void formatTracks()
     }
     timeLabel.setText("Time remaining: "+((millis()-zeit)*160/(i+1)-(millis()-zeit))/1000+"s");
     if (retry) {
-      //println("extra erase track: " + i);
-      //singleErase(i,200);
       i--;
       retry = false;
     }
