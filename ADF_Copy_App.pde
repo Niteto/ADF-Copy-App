@@ -18,18 +18,17 @@
 
 /* additional code & help for OSX Serialport by Christian Vogelgsang */
 
+boolean debug = false;
 boolean HD_allowed = true;
 boolean write_SCP = false; //at the moment there is no write function
 boolean scpMode = true;
-String version = "v1.110";
+String version = "v1.130";
 String versionString = version + " Beta";
 Float minVer = 1.110;
 String firmware = "unknown";
-//import com.fazecast.jSerialComm.*;
 import java.io.DataOutputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
-//import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
 import java.util.List;
@@ -54,7 +53,7 @@ import jssc.*;
 
 int bgcolor;			     // Background color
 int fgcolor;			     // Fill color
-Serial myPort;                       // The serial port
+Serial myPort;         // The serial port
 byte[] readString = new byte[512*11];
 long errormap[] = new long[168];
 byte bitMapArray[] = new byte[2*1760];
@@ -65,7 +64,6 @@ boolean abort = false;
 String extError;
 int lf = 10;
 byte track[] = new byte[512*22];
-//byte stream[] = new byte[23*1088+1482];
 byte trackComp[] = new byte[512*22];
 long hist[][] = new long [168][256];
 int indexes[][] = new int [10][4];
@@ -106,7 +104,6 @@ int lastTrack = -1;
 
 Font myFont = null;
 String myFontName = "RobotoCondensed-Regular.ttf";
-//String myFontName = "IndieFlower.ttf";
 Float myFontSize = 13.0;
 PFont myPFont = null;
 
@@ -125,6 +122,8 @@ int scpStart = 0;
 int scpEnd = 81;
 int focusStroke = 2;
 int maxSectors = 100;
+int windowmode = 0;
+
 class SectorTable
 {
   public int bytePos;
@@ -187,7 +186,6 @@ boolean saveIni(String iniFile)
   try {
     File f = new File(iniFile);
     if (!f.exists()) {
-      //      f.getParentFile().mkdirs();
       f.createNewFile();
     }    
     Wini ini = new Wini(f);
@@ -227,27 +225,34 @@ String iniPath () {
   pathName = System.getProperty("user.home");
   //pathName = getClass().getProtectionDomain().getCodeSource().getLocation().getPath(); // get the path of the .jar
   //pathName = pathName.substring(1, pathName.lastIndexOf("/") ); //create a new string by removing the garbage
-  //  System.out.println(pathName); // this is for debugging - see the results
+  if (debug) System.out.println(pathName); // this is for debugging - see the results
   return pathName;
 }
 
 void setup() {
-  size(600, 560, JAVA2D);  // Stage size
-  //size(1200, 720, JAVA2D);  // Stage size
+  size(1200, 690, JAVA2D);  // Stage size
   println("\n------------------------------------------------------------");
   println("ADF-Copy App - Frontend to Read and Write Amiga Floppy Disks");
   println("Copyright (C) 2020 Dominik Tonn (nick@niteto.de)");
   println("visit http://nicklabor.niteto.de for Infos and Updates");
   println("------------------------------------------------------------\n");
+  if (args != null) {
+    if (args[0].contains("debug)")) {
+      debug = true;
+      println("Debug messages enabled");
+    }
+  }
   java.awt.Frame myFrame = (java.awt.Frame)((processing.awt.PSurfaceAWT.SmoothCanvas) surface.getNative()).getFrame();
-  //f.setSize(600, 590);
   iniFile = iniPath() + "/adf-copy.ini";
   if (!loadIni(iniFile)) {
     posx= myFrame.getX();
     posy= myFrame.getY();
     saveIni(iniFile);
   }
+  if (showhist) setWindowMode(1);
+  else setWindowMode(0);
   myFrame.setLocation(posx, posy);
+
   int major, minor, update;
 
   println("Java runtime: " + System.getProperty("java.runtime.version"));
@@ -379,34 +384,6 @@ void setup() {
 
 void draw() {
   background(230);
-  //surface.setTitle("ADF-Copy "+version);
-  //background(230);
-  //sP1.setGraphic(upperGrid);
-  //sP2.setGraphic(lowerGrid);
-  //fluxPad.setGraphic(flux);
-  //histPad.setGraphic(histogram);
-  //cellPad.setGraphic(cellgraph);
-  //progressPad.setGraphic(progress);
-  //activePad.setGraphic(active);
-  //statusPad.setGraphic(status);
-  //DiskInfoPad.setGraphic(diskinfo);
-  //bitmapPad.setGraphic(bitmap);
-  //logoPad.setGraphic(logo);
-  //diskPad.setGraphic(diskImage);
-  //sP1.draw();
-  //sP2.draw();
-  //fluxPad.draw();
-  //progressPad.draw();
-  //statusPad.draw();
-  //DiskInfoPad.draw();
-  //logoPad.draw();
-  //histPad.draw();
-  //cellPad.draw();
-  if (focused) {
-    ((processing.awt.PSurfaceAWT.SmoothCanvas)histwindow.getSurface().getNative()).getFrame().toFront();
-    if (showflux) ((processing.awt.PSurfaceAWT.SmoothCanvas)fluxwindow.getSurface().getNative()).getFrame().toFront();
-    if (showdisk) ((processing.awt.PSurfaceAWT.SmoothCanvas)diskwindow.getSurface().getNative()).getFrame().toFront();
-  }
 }
 
 int gridClick(int side, int x, int y, int button)
@@ -426,26 +403,20 @@ void mouseReleased() {
   int y = mouseY;
   int button = mouseButton;
   int tempTrack = -1;
-  //  println("X: " + x + " Y: " + y + " Button: " + button);
   if (((x > sP1.getX()) && (x < (sP1.getX()+sP1.getWidth()))) &&
     ((y > sP1.getY()) && (y < (sP1.getY()+sP1.getHeight()))))
     tempTrack = gridClick(0, (x-(int)sP1.getX()), (y-(int)sP1.getY()), button);
-  //println("sP1x: " + sP1.getX() + " y: " + sP1.getY() + " w: " + sP1.getWidth() + " h: " + sP1.getHeight() + " " + millis());  
 
   if (((x > sP2.getX()) && (x < (sP2.getX()+sP2.getWidth()))) &&
     ((y > sP2.getY()) && (y < (sP2.getY()+sP2.getHeight()))))
-    //println("sP2x: " + sP2.getX() + " y: " + sP2.getY() + " w: " + sP2.getWidth() + " h: " + sP2.getHeight() + " " + millis());
     tempTrack = gridClick(1, (x-(int)sP2.getX()), (y-(int)sP2.getY()), button);
   if (tempTrack == -1) return;
-  //  if (tempTrack!=-1) trackmap[tempTrack] = #ffffff - trackmap[tempTrack];
   if (tempTrack == focusTrack) focusTrack = -1;
   else focusTrack = tempTrack;
   if (focusTrack!=-1) {
     drawStatus(status, "Track: " + focusTrack+" Errors: "+parseError(errormap[focusTrack]));
     drawHistwindow(histogram, focusTrack);
     drawFluxwindow(cellgraph, focusTrack, false);
-    //for (int j = 0; j <= revsInBuffer; j++)
-    //  println("revPointer["+ focusTrack +"]["+j+"]: " + revpointer[focusTrack][j]);
   } else drawStatus(status, "");
   grid(upperGrid, 0);
   grid(lowerGrid, 1);
@@ -473,7 +444,6 @@ void readscp(File selection) {
     filePath=selection.getParent();
     if (!fileName.contains(".scp")) fileName +=".scp";
     filepathandname.setText(fileName);
-    //enableButton(StartRead);
     thread("readscp_main");
   }
 }
